@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import PerguntaForm from './components/PerguntaForm';
 import Resultado from './components/Resultado';
 import { Pergunta, ResultadoConsulta } from './lib/types';
