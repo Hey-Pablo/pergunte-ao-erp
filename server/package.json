@@ -1,0 +1,49 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "API para consultas seguras de banco de dados ERP",
+  "main": "dist/index.js",
+  "scripts": {
+    "dev": "tsx src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "test": "vitest run",
+    "test:watch": "vitest watch",
+    "type-check": "tsc --noEmit",
+    "lint": "eslint src/**/*.ts --fix"
+  },
+  "keywords": [
+    "erp",
+    "sql",
+    "api",
+    "typescript"
+  ],
+  "author": "Pablo Dilio",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "cors": "^2.8.6",
+    "dotenv": "^18.0.10",
+    "dotenv-safe": "^9.1.0",
+    "express": "^4.22.2",
+    "helmet": "^8.3.0",
+    "js-yaml": "^5.5.0",
+    "morgan": "^1.12.1",
+    "node-sql-parser": "^5.4.0",
+    "pg": "^8.23.1",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2",
+    "yaml": "^2.9.1"
+  },
+  "devDependencies": {
+    "@electric-sql/pglite": "^0.5.17",
+    "@types/cors": "^2.8.19",
+    "@types/dotenv-safe": "^9.1.0",
+    "@types/express": "^4.17.21",
+    "@types/morgan": "^1.9.10",
+    "@types/node": "^22.0.0",
+    "@types/pg": "^8.6.6",
+    "ts-node": "^10.9.2",
+    "vitest": "^2.1.9"
+  }
+}

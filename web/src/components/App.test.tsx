@@ -12,6 +12,7 @@ vi.mock('../lib/api', () => ({
 
 describe('App', () => {
   beforeEach(() => {
+    localStorage.clear();
     vi.clearAllMocks();
   });
 
@@ -53,9 +54,6 @@ describe('App', () => {
       explicacao: 'Lista clientes',
       confidente: true,
       pergunta: 'Quais clientes ativos?',
-    });
-
-    vi.mocked(executarSql).mockResolvedValue({
       dados: [{ cliente_id: 1, codigo: 'CLI001' }],
       colunas: ['cliente_id', 'codigo'],
       total_resultados: 1,
@@ -75,8 +73,10 @@ describe('App', () => {
     await userEvent.click(submitButton);
 
     await waitFor(() => {
-      expect(screen.getByText('Resultado')).toBeInTheDocument();
+      expect(screen.getByText('CLI001')).toBeInTheDocument();
     });
+    expect(executarSql).not.toHaveBeenCalled();
+    expect(localStorage.getItem('historico-consultas')).toContain('Quais clientes ativos?');
   });
 
   it('shows error when API fails', async () => {

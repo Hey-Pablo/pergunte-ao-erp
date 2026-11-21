@@ -1,5 +1,10 @@
 export interface GerarSqlResponse {
-  pergunta: string;
+  pergunta?: string;
+  dados?: any[];
+  colunas?: string[];
+  total_resultados?: number;
+  tempo_execucao_ms?: number;
+  sucesso?: boolean;
   sql: string;
   explicacao: string;
   confidente: boolean;

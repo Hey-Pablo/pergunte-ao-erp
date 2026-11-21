@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { QuestionForm } from './components/QuestionForm';
 import { ResultCard, DataTable, ChartCard, SQLPanel, ExplanationPanel, ErrorPanel, ClarificationDialog } from './components/ResultCard';
 import { History } from './components/History';
-import { gerarSql, executarSql, checkHealth } from './lib/api';
+import { gerarSql, checkHealth } from './lib/api';
 import { HistoryItem, LoadingState } from './lib/types';
 
 function App() {
@@ -18,7 +18,9 @@ function App() {
     erro?: string;
     detalhes?: string[];
   } | null>(null);
-  const [history, setHistory] = useState<HistoryItem[]>([]);
+  const [history, setHistory] = useState<HistoryItem[]>(() => {
+    try { return JSON.parse(localStorage.getItem('historico-consultas') || '[]'); } catch { return []; }
+  });
   const [showHistory, setShowHistory] = useState(false);
   const [apiHealthy, setApiHealthy] = useState<boolean | null>(null);
   const [clarification, setClarification] = useState<{
@@ -38,6 +40,8 @@ function App() {
     };
     check();
   }, []);
+
+  useEffect(() => { localStorage.setItem('historico-consultas', JSON.stringify(history)); }, [history]);
 
   const addToHistory = useCallback((item: HistoryItem) => {
     setHistory(prev => {
@@ -97,41 +101,14 @@ function App() {
         throw new Error(resposta.explicacao || 'Não foi possível gerar SQL');
       }
 
-      // Execute the SQL
-      setLoadingState('executando');
-      const execResult = await executarSql(resposta.sql);
-
-      if (execResult.erro) {
-        setCurrentResult({
-          sql: resposta.sql,
-          explicacao: resposta.explicacao || '',
-          data: [],
-          columns: [],
-          totalResultados: 0,
-          erro: execResult.erro,
-          detalhes: execResult.detalhes
-        });
-        addToHistory({
-          id: Date.now().toString(),
-          pergunta,
-          sql: resposta.sql,
-          explicacao: resposta.explicacao || '',
-          timestamp: Date.now(),
-          sucesso: false,
-          erro: execResult.erro
-        });
-        setLoadingState('idle');
-        return;
-      }
-
       const result = {
         sql: resposta.sql,
         explicacao: resposta.explicacao || '',
-        data: execResult.dados || [],
-        columns: execResult.colunas || [],
+        data: resposta.dados || [],
+        columns: resposta.colunas || [],
         tabelaPrincipal: resposta.tabelaPrincipal,
         tipoConsulta: resposta.tipoConsulta,
-        totalResultados: execResult.total_resultados || 0
+        totalResultados: resposta.total_resultados || 0
       };
 
       setCurrentResult(result);
@@ -174,7 +151,7 @@ function App() {
     setCurrentResult(null);
   }, []);
 
-  const hasResults = currentResult && !currentResult.erro && currentResult.data.length > 0;
+  const hasResults = currentResult && !currentResult.erro;
   const hasError = currentResult && currentResult.erro;
 
   return (
@@ -217,7 +194,7 @@ function App() {
             />
             {!apiHealthy && (
               <div style={{ marginTop: '12px', padding: '12px', background: 'var(--color-warning-light)', border: '1px solid var(--color-warning)', borderRadius: 'var(--radius-md)', color: 'var(--color-warning)', fontSize: '0.8125rem' }}>
-                ⚠️ A API não está disponível. Verifique se o servidor está rodando em <code>http://localhost:3001</code>.
+                ⚠️ A API não está disponível. Verifique se o servidor está rodando em <code>http://localhost:3002</code>.
               </div>
             )}
           </div>
@@ -238,6 +215,7 @@ function App() {
         {clarification && (
           <ClarificationDialog
             pergunta={clarification.perguntaOriginal}
+            esclarecimento={clarification.perguntaEsclarecimento}
             onConfirm={handleClarificationConfirm}
             onCancel={handleClarificationCancel}
           />

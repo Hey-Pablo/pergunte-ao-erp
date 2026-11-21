@@ -303,11 +303,12 @@ export function ErrorPanel({ erro, detalhes, onRetry, onBack }: ErrorPanelProps)
 
 interface ClarificationDialogProps {
   pergunta: string;
+  esclarecimento: string;
   onConfirm: (novaPergunta: string) => void;
   onCancel: () => void;
 }
 
-export function ClarificationDialog({ pergunta, onConfirm, onCancel }: ClarificationDialogProps) {
+export function ClarificationDialog({ pergunta, esclarecimento, onConfirm, onCancel }: ClarificationDialogProps) {
   const [resposta, setResposta] = useState('');
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -330,7 +331,7 @@ export function ClarificationDialog({ pergunta, onConfirm, onCancel }: Clarifica
           Sua pergunta "<strong>{pergunta}</strong>" está ambígua.
         </p>
         <p style={{ marginTop: '8px', color: 'var(--color-text-secondary)' }}>
-          {pergunta.includes('mês') || pergunta.includes('mes') ? 'Qual mês você gostaria de consultar?' : 'Por favor, forneça mais detalhes para que eu possa gerar a consulta correta.'}
+          {esclarecimento}
         </p>
 
         <form onSubmit={handleSubmit} style={{ marginTop: '16px' }}>
