@@ -1,6 +1,6 @@
 # Pergunte ao ERP
 
-> **Status: em desenvolvimento.** O código entra aos poucos; abaixo está o planejamento do projeto.
+> **Demonstração:** https://hey-pablo.github.io/pergunte-ao-erp/
 
 ## O que é
 
@@ -12,51 +12,177 @@ IA sobre dados com segurança real (lista de permissões, usuário somente leitu
 
 ## Stack
 
-React e TypeScript. Node.js no servidor. PostgreSQL com o esquema do projeto 3. Analisador de SQL (`node-sql-parser` ou `pgsql-ast-parser`). Claude (`claude-opus-5-5` como padrão) com saída estruturada, devolvendo SQL e explicação em campos separados. Recharts.
+React, TypeScript, Vite. Node.js/Express no servidor. PostgreSQL com esquema de ERP fictício. Recharts para visualizacao. node-sql-parser para validacao de SQL.
 
 ## Estrutura
 
 ```
 pergunte-ao-erp/
-├─ web/                        # pergunta, resultado, SQL, explicação, histórico
+├─ web/                        # Interface React
+│  ├─ src/
+│  │  ├─ components/          # PerguntaForm, Resultado
+│  │  ├─ pages/               # Paginas principais
+│  │  ├─ lib/                 # Tipos e utilitarios
+│  │  ├─ App.tsx
+│  │  ├─ main.tsx
+│  │  └─ index.css
+│  ├─ index.html
+│  ├─ package.json
+│  └─ vite.config.ts
 ├─ server/src/
-│  ├─ gerarSql.ts              # pergunta + dicionário de dados → SQL
-│  ├─ validarSql.ts            # só SELECT, tabelas permitidas, LIMIT
-│  ├─ executar.ts              # usuário de leitura, tempo máximo
-│  ├─ explicar.ts
-│  ├─ esquema/dicionario.yaml  # tabelas, colunas, sinônimos de negócio
-│  └─ prompts/
-├─ db/                         # esquema, carga, papel de leitura, visões
-├─ avaliacao/
-│  ├─ perguntas.csv            # 40 perguntas com SQL de gabarito
-│  ├─ rodar.ts
-│  └─ relatorios/
-└─ README.md                   # ameaças e defesas
+│  ├─ routes/
+│  │  ├─ gerarSql.ts          # Genera SQL da pergunta
+│  │  ├─ validarSql.ts        # Valida SQL
+│  │  └─ executar.ts          # Executa com usuario de leitura
+│  ├─ gerarSql.ts              # Configuracao do cliente
+│  ├─ validarSql.ts            # Validador principal
+│  ├─ executar.ts              # Executor com timeout
+│  ├─ explicar.ts            # Explica resultados
+│  ├─ esquema/dicionario.yaml  # Dicionario de dados
+│  ├─ prompts/gerar_sql.md     # Prompt para IA
+│  ├─ app.ts                   # Middleware Express
+│  ├─ server.ts
+│  └─ index.ts               # Entrada principal
+├─ db/
+│  └─ init-scripts/
+│     ├─ 01_schema.sql        # Schema do banco
+│     ├─ 02_seed.sql          # Dados de exemplo
+│     └─ 03_reader_user.sql   # Usuario de leitura
+├─ tests/
+│  └─ validarSql.test.ts     # Testes do validador
+├─ server/Dockerfile
+├─ docker-compose.yml
+├─ .env.example
+└─ README.md
 ```
 
-## Plano
+## Segurança
 
-1. Banco de demonstração em PostgreSQL com papel somente leitura e limite de tempo por consulta.
-2. Dicionário de dados: descrição de cada tabela e coluna e termos de negócio (inadimplente, faturado, em aberto).
-3. Geração de SQL com o dicionário e 8 exemplos de pergunta e consulta.
-4. Validador: uma única instrução, apenas `SELECT`, apenas tabelas e visões permitidas e `LIMIT` obrigatório. Teste com consultas maliciosas.
-5. Execução e resposta em JSON.
-6. Tela: tabela, gráfico quando houver uma dimensão e uma medida, SQL visível e explicação em português.
-7. Autocorreção: se o banco devolver erro, uma nova tentativa com a mensagem de erro.
-8. Perguntas ambíguas: o sistema pede esclarecimento antes de consultar.
-9. Avaliação: resultado igual ao do gabarito em 40 perguntas, com meta de 80% e análise dos erros.
-10. Segurança: limite de uso, registro das consultas e dados fictícios. Publicação e README.
+### Ameaças e Defesas
 
-## Como deve funcionar
+| Ameaca | Defesa |
+|--------|--------|
+| Execucao de consultas maliciosas | Validador estrito que rejeita INSERT/UPDATE/DELETE |
+| Exposicao de dados sensiveis | Usuario de leitura somente, sem CREATE/DROP |
+| Consultas lentas | Timeout de 30 segundos por consulta |
+| Excesso de resultados | Limite maximo de 10.000 registros |
+| SQL injection | Validacao de tabelas e colunas permitidas |
 
-- "Quais os 5 clientes com mais títulos vencidos?" devolve tabela, gráfico, SQL e explicação em poucos segundos.
-- "Apague os clientes inativos" é recusado pelo validador, e a tela explica que a ferramenta só consulta.
-- "Vendas do mês", sem dizer qual mês, gera pergunta de esclarecimento.
-- O relatório de avaliação mostra a taxa de acerto e os tipos de erro.
+### Permissoes do Usuario de Leitura
 
-## Prazo
+- `SELECT` em todas as tabelas e vistas
+- `statement_timeout = 30s`
+- Sem permissoes DDL ou utilitarios
 
-3 a 4 semanas.
+## Instalacao Local
+
+### Requisitos
+
+- Node.js 20+
+- PostgreSQL 16+
+- Docker (opcional)
+
+### Executar com Docker
+
+```bash
+# Copiar .env.example para .env e configurar senhas
+cp .env.example .env
+
+# Subir servicos
+docker-compose up -d
+
+# Executar scripts de inicializacao manualmente (se necessario)
+docker-compose exec db psql -U pergunte_user -d pergunte_erp -f /docker-entrypoint-initdb.d/01_schema.sql
+docker-compose exec db psql -U pergunte_user -d pergunte_erp -f /docker-entrypoint-initdb.d/02_seed.sql
+docker-compose exec db psql -U postgres -d pergunte_erp -f /docker-entrypoint-initdb.d/03_reader_user.sql
+```
+
+### Executar localmente
+
+```bash
+# Banco de dados
+docker run -d -p 5432:5432 --name pg-pergunte \
+  -e POSTGRES_USER=pergunte_user \
+  -e POSTGRES_PASSWORD=senha \
+  -e POSTGRES_DB=pergunte_erp \
+  postgres:16-alpine
+
+# Inicializar schema
+# ... (rodar scripts SQL)
+
+# Servidor
+cd server
+npm install
+npm run dev
+
+# Frontend
+cd web
+npm install
+npm run dev
+```
+
+## Tabelas e Visoes Disponiveis
+
+### Tabelas Principais
+
+| Tabela | Descricao |
+|--------|-----------|
+| `clientes` | Cadastro de clientes |
+| `produtos` | Cadastro de produtos |
+| `fornecedores` | Cadastro de fornecedores |
+| `filiais` | Filiais da empresa |
+| `titulos` | Contas a pagar/receber |
+| `parcelas` | Parcelas de titulos |
+| `notas_fiscais` | Notas fiscais |
+| `itens_nota` | Itens de notas fiscais |
+| `movimentos_estoque` | Entradas e saidas de estoque |
+
+### Visoes Prontas
+
+| Visao | Uso |
+|-------|-----|
+| `v_saldo_estoque` | Saldo atual de produtos |
+| `v_titulos_vencidos` | Titulos com datas de vencimento |
+| `v_indicadores_faturamento` | Faturamento mensal |
+| `v_clientes_inadimplentes` | Clientes com titulos em aberto |
+
+## Exemplos de Consultas
+
+| Pergunta | SQL Gerado |
+|----------|------------|
+| "Quais os 5 clientes com mais titulos vencidos?" | SELECT dos titulos com ordenacao por valor |
+| "Saldo de estoque de todos os produtos" | SELECT de v_saldo_estoque |
+| "Total de titulos em aberto por cliente" | SELECT com agregacao |
+| "Faturamento do mes atual" | SELECT de v_indicadores_faturamento |
+
+## Testes
+
+```bash
+# Testes do validador SQL
+cd server
+npm test
+```
+
+## API
+
+### Endpoints
+
+| Metodo | Rota | Descricao |
+|--------|------|-----------|
+| POST | /api/gerar-sql | Gera SQL a partir de pergunta |
+| POST | /api/validar-sql | Valida uma consulta SQL |
+| POST | /api/executar | Executa consulta validada |
+| GET | /api/executar/visoes | Lista visoes disponiveis |
+| GET | /api/executar/visao/:nome | Schema de uma visao |
+| GET | /api/health | Health check |
+
+## Limite de Resultados
+
+Por seguranca, consultas sao limitadas a 10.000 registros por padrao. O limite pode ser ajustado para consultas especificas com parametro `limite`.
+
+## Historico de Alteracoes
+
+- 2026-11-21: Estrutura inicial com docker-compose, schema SQL, API REST e frontend React
 
 ## Autor
 
