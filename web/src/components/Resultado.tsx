@@ -4,6 +4,7 @@ import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend, Cart
 interface Props {
   pergunta: string;
   sql: string;
+  explicacao: string;
   dados: any[];
   colunas: string[];
   tempoExecucao: number;
@@ -13,6 +14,7 @@ interface Props {
 export default function Resultado({
   pergunta,
   sql,
+  explicacao,
   dados,
   colunas,
   tempoExecucao,
@@ -22,6 +24,8 @@ export default function Resultado({
     return (
       <section className="resultado-section">
         <h2>Resultado</h2>
+        <p>{explicacao}</p>
+        <code>{sql}</code>
         <div className="resultado-vazio">
           <p>Nenhum resultado encontrado para sua consulta.</p>
         </div>
@@ -39,6 +43,7 @@ export default function Resultado({
   return (
     <section className="resultado-section">
       <h2>Resultado da Consulta</h2>
+      <p>{explicacao}</p>
 
       <div className="resultado-header">
         <span className="pergunta">{pergunta}</span>

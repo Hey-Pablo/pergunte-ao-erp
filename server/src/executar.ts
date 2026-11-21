@@ -1,5 +1,5 @@
 import { Pool } from 'pg';
-import { validarSQL, ResultadoValidacao } from './validarSql';
+import { validarSQL, validarConsultaVisao } from './validarSql';
 
 export interface ResultadoExecucao {
   sucesso: boolean;
@@ -8,129 +8,32 @@ export interface ResultadoExecucao {
   tempo_execucao_ms: number;
   total_resultados: number;
   erro?: string;
+  erroBanco?: boolean;
   timeout?: boolean;
 }
 
-// Timeout de execucao (30 segundos)
-const TIMEOUT_MS = 30000;
-
-export async function executarSQL(
-  pool: Pool,
-  sql: string,
-  limiteResultados: number = 100
-): Promise<ResultadoExecucao> {
+export async function executarSQL(pool: Pool, sql: string): Promise<ResultadoExecucao> {
   const inicio = Date.now();
-
+  const vazio = () => ({ tempo_execucao_ms: Date.now() - inicio, total_resultados: 0 });
+  if (!validarSQL(sql).valido) return { sucesso: false, erro: 'Consulta recusada pelo validador.', ...vazio() };
+  let cliente;
   try {
-    // Validar antes de executar
-    const validacao = validarSQL(sql);
-    if (!validacao.valido) {
-      return {
-        sucesso: false,
-        erro: `Validacao falhou: ${validacao.erros.join(', ')}`,
-        tempo_execucao_ms: Date.now() - inicio,
-        total_resultados: 0
-      };
-    }
-
-    // Aplicar limite se nao existir
-    let sqlFinal = sql.trim();
-    if (!/\bLIMIT\s+\d+/i.test(sqlFinal)) {
-      sqlFinal = sqlFinal.replace(/;\s*$/i, '') + ` LIMIT ${limiteResultados}`;
-    }
-
-    // Executar com timeout
-    const cliente = await pool.connect();
-    let resultado: any;
-
-    try {
-      // Configurar timeout para esta conexao
-      await cliente.query('SET statement_timeout = $1', [TIMEOUT_MS]);
-      resultado = await cliente.query(sqlFinal);
-    } finally {
-      cliente.release();
-    }
-
-    const tempoExecucao = Date.now() - inicio;
-
-    return {
-      sucesso: true,
-      dados: resultado.rows,
-      colunas: resultado.fields.map((f: any) => f.name),
-      tempo_execucao_ms: tempoExecucao,
-      total_resultados: resultado.rowCount || resultado.rows.length
-    };
-
+    cliente = await pool.connect();
+    const papel = await cliente.query("SELECT current_user = 'reader_user' AND NOT rolsuper AND NOT rolcreatedb AND NOT rolcreaterole AND NOT rolreplication AND NOT rolbypassrls AND NOT EXISTS (SELECT 1 FROM pg_auth_members WHERE member = r.oid) AS permitido FROM pg_roles r WHERE rolname = current_user");
+    if (!papel.rows[0]?.permitido) return { sucesso: false, erro: 'Conexão exige papel reader_user sem privilégios elevados.', ...vazio() };
+    await cliente.query('BEGIN READ ONLY');
+    await cliente.query("SET LOCAL statement_timeout = '30s'");
+    const resultado = await cliente.query(sql);
+    await cliente.query('COMMIT');
+    return { sucesso: true, dados: resultado.rows, colunas: resultado.fields.map(f => f.name), total_resultados: resultado.rows.length, tempo_execucao_ms: Date.now() - inicio };
   } catch (e: any) {
-    const tempoExecucao = Date.now() - inicio;
-
-    // Verificar se e' timeout
-    if (e.code === '40P01' || e.message?.includes('timeout') || e.message?.includes('cancel')) {
-      return {
-        sucesso: false,
-        erro: 'Consulta excedeu o tempo maximo de execucao (30 segundos)',
-        tempo_execucao_ms: tempoExecucao,
-        total_resultados: 0,
-        timeout: true
-      };
-    }
-
-    // Erro de sintaxe
-    if (e.code === '42601' || e.code === '42601') {
-      return {
-        sucesso: false,
-        erro: `Erro de sintaxe SQL: ${e.message}`,
-        tempo_execucao_ms: tempoExecucao,
-        total_resultados: 0
-      };
-    }
-
-    // Erro de referencia (tabela/coluna inexistente)
-    if (e.code === '42703') {
-      return {
-        sucesso: false,
-        erro: `Erro de referencia: ${e.message}`,
-        tempo_execucao_ms: tempoExecucao,
-        total_resultados: 0
-      };
-    }
-
-    return {
-      sucesso: false,
-      erro: `Erro ao executar consulta: ${e.message}`,
-      tempo_execucao_ms: tempoExecucao,
-      total_resultados: 0
-    };
-  }
+    if (cliente) await cliente.query('ROLLBACK').catch(() => {});
+    return { sucesso: false, erro: String(e.message || 'Erro ao executar consulta'), erroBanco: true, timeout: e.code === '57014', ...vazio() };
+  } finally { cliente?.release(); }
 }
 
-// Obter informacoes da visao
-export async function obterEsquemaVisao(pool: Pool, nomeVisao: string): Promise<{
-  colunas: Array<{ nome: string, tipo: string, descricao?: string }>;
-  existe: boolean;
-}> {
-  if (!validarConsultaVisao(nomeVisao)) {
-    return { colunas: [], existe: false };
-  }
-
-  const query = `
-    SELECT column_name, data_type, is_nullable
-    FROM information_schema.columns
-    WHERE table_schema = 'public' AND table_name = $1
-    ORDER BY ordinal_position
-  `;
-
-  try {
-    const resultado = await pool.query(query, [nomeVisao]);
-    return {
-      colunas: resultado.rows.map((r: any) => ({
-        nome: r.column_name,
-        tipo: r.data_type,
-        descricao: undefined
-      })),
-      existe: true
-    };
-  } catch {
-    return { colunas: [], existe: false };
-  }
+export async function obterEsquemaVisao(pool: Pool, nomeVisao: string): Promise<{ colunas: Array<{ nome: string; tipo: string }>; existe: boolean }> {
+  if (!validarConsultaVisao(nomeVisao)) return { colunas: [], existe: false };
+  const resultado = await pool.query("SELECT column_name, data_type FROM information_schema.columns WHERE table_schema = 'public' AND table_name = $1 ORDER BY ordinal_position", [nomeVisao]);
+  return { colunas: resultado.rows.map(r => ({ nome: r.column_name, tipo: r.data_type })), existe: resultado.rows.length > 0 };
 }

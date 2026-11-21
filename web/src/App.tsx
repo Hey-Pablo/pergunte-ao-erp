@@ -14,46 +14,17 @@ function App() {
     setResultado(null);
 
     try {
-      // Passo 1: Gerar SQL
-      const gerarResposta = await fetch('/api/gerar-sql', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const resposta = await fetch('/api/gerar-sql', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ pergunta: pergunta.texto })
       });
-
-      if (!gerarResposta.ok) {
-        throw new Error('Falha ao gerar SQL');
+      const dados = await resposta.json();
+      if (!resposta.ok || dados.sucesso === false) throw new Error(dados.erro || 'Falha ao consultar');
+      if (!dados.confidente) {
+        setErro(dados.explicacao);
+        return;
       }
-
-      const dadosGeracao = await gerarResposta.json();
-      const sql = dadosGeracao.sql;
-
-      // Passo 2: Validar SQL
-      const validarResposta = await fetch('/api/validar-sql', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ sql })
-      });
-
-      const dadosValidacao = await validarResposta.json();
-      if (!dadosValidacao.valido) {
-        throw new Error(`SQL invalido: ${dadosValidacao.erros.join(', ')}`);
-      }
-
-      // Passo 3: Executar SQL
-      const executarResposta = await fetch('/api/executar', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ sql, limite: 50 })
-      });
-
-      if (!executarResposta.ok) {
-        const erroDados = await executarResposta.json();
-        throw new Error(erroDados.erro || 'Falha ao executar consulta');
-      }
-
-      const dadosExecucao = await executarResposta.json();
-      setResultado(dadosExecucao);
+      setResultado({ ...dados, pergunta: pergunta.texto });
 
     } catch (e: any) {
       setErro(e.message || 'Erro inesperado');
@@ -81,7 +52,8 @@ function App() {
         {resultado && (
           <Resultado
             pergunta={resultado.pergunta || ''}
-            sql={resultado.sql}
+            sql={resultado.sql || ''}
+            explicacao={resultado.explicacao || ''}
             dados={resultado.dados || []}
             colunas={resultado.colunas || []}
             tempoExecucao={resultado.tempo_execucao_ms}

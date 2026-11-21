@@ -1,5 +1,5 @@
 import { Router, Request, Response } from 'express';
-import { validarSQL } from '../../validarSql';
+import { validarSQL } from '../validarSql';
 
 export function validarSqlRouter() {
   const router = Router();

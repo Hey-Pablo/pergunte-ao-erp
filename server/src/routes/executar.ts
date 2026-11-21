@@ -1,7 +1,7 @@
 import { Router, Request, Response } from 'express';
 import { Pool } from 'pg';
-import { executarSQL, obterEsquemaVisao } from '../../executar';
-import { validarSQL, validarConsultaVisao } from '../../validarSql';
+import { executarSQL, obterEsquemaVisao } from '../executar';
+import { validarSQL, validarConsultaVisao } from '../validarSql';
 
 export function executarRouter() {
   const router = Router();
@@ -11,8 +11,9 @@ export function executarRouter() {
 
   function getPool(): Pool {
     if (!pool) {
+      if (!process.env.READER_DATABASE_URL) throw new Error('READER_DATABASE_URL ausente');
       pool = new Pool({
-        connectionString: process.env.DATABASE_URL,
+        connectionString: process.env.READER_DATABASE_URL,
         max: 5,
         idleTimeoutMillis: 30000,
         connectionTimeoutMillis: 5000,
@@ -41,11 +42,11 @@ export function executarRouter() {
       }
 
       // Executar a consulta
-      const resultado = await executarSQL(getPool(), sql, limite || 100);
+      const resultado = await executarSQL(getPool(), sql);
 
       if (!resultado.sucesso) {
         return res.status(400).json({
-          erro: resultado.erro,
+          erro: 'Não foi possível executar a consulta.',
           tempo_execucao_ms: resultado.tempo_execucao_ms,
           timeout: resultado.timeout || false
         });
@@ -73,7 +74,7 @@ export function executarRouter() {
 
     if (!validarConsultaVisao(nome)) {
       return res.status(400).json({
-        erro: `Visao '${nome}' nao esta disponivel'
+        erro: `Visao '${nome}' nao esta disponivel`
       });
     }
 

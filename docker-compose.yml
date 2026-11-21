@@ -22,15 +22,16 @@ services:
       context: ./server
       dockerfile: Dockerfile
     environment:
-      DATABASE_URL: postgresql://${POSTGRES_USER:-pergunte_user}:${POSTGRES_PASSWORD}@db:5432/pergunte_erp?schema=public
-      READER_USER: reader_user
-      READER_PASSWORD: ${READER_PASSWORD:?Defina READER_PASSWORD no .env}
-      PORT: 3001
+      READER_DATABASE_URL: postgresql://reader_user:${READER_PASSWORD}@db:5432/pergunte_erp
+      BASE_URL: ${BASE_URL:-http://host.docker.internal:3001/v1}
+      API_KEY: ${API_KEY:-}
+      MODEL: ${MODEL:-auto}
+      PORT: 3002
     depends_on:
       db:
         condition: service_healthy
     ports:
-      - '127.0.0.1:3001:3001'
+      - '127.0.0.1:3002:3002'
 
 volumes:
   postgres_data:

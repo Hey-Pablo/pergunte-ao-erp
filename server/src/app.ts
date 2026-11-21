@@ -2,10 +2,10 @@ import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
-import dotenv from 'dotenv-safe';
+import dotenv from 'dotenv';
 
 // Carregar variaveis de ambiente
-dotenv.config();
+dotenv.config({ path: '../.env' });
 
 import { criarServidor } from './server';
 
