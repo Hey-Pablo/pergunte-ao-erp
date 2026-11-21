@@ -1,3 +1,5 @@
+import { Parser } from 'node-sql-parser';
+
 // Tabelas permitidas para consultas
 const TABELAS_PERMITIDAS = [
   'clientes',
@@ -38,64 +40,42 @@ export interface ResultadoValidacao {
 
 export function validarSQL(sql: string): ResultadoValidacao {
   const erros: string[] = [];
-  const sqlUpper = sql.trim().toUpperCase();
-
-  // Verificar se e' uma unica instrucao
-  if (!sqlUpper.startsWith('SELECT')) {
-    erros.push('Apenas consultas SELECT sao permitidas');
-    return { valido: false, erros };
+  if (!sql.trim().toUpperCase().startsWith('SELECT')) {
+    return { valido: false, erros: ['Apenas consultas SELECT sao permitidas'] };
   }
-
-  // Verificar operacoes proibidas
-  const operacoesProibidas = ['INSERT', 'UPDATE', 'DELETE', 'DROP', 'CREATE', 'ALTER', 'TRUNCATE', 'EXEC', 'EXECUTE', 'RUN'];
-  for (const op of operacoesProibidas) {
-    if (sqlUpper.includes(op)) {
-      erros.push(`Operacao '${op}' nao permitida`);
+  if (/--|\/\*|\*\//.test(sql)) return { valido: false, erros: ['Comentarios nao permitidos'] };
+  try {
+    const ast: any = new Parser().astify(sql, { database: 'Postgresql' });
+    if (Array.isArray(ast) || ast.type !== 'select' || ast.with || ast._next || ast.into?.position || ast.locking_read) {
+      return { valido: false, erros: ['Apenas uma consulta SELECT simples e permitida'] };
     }
-  }
-
-  // Verificar se e' uma sub-query ou script
-  const pontoEComa = (sql.match(/;/g) || []).length;
-  if (pontoEComa > 1) {
-    erros.push('A consulta deve conter apenas uma unica instrucao SQL');
-  }
-
-  // Verificar funcao perigosa
-  if (sqlUpper.includes('PG_SLEEP') || sqlUpper.includes('DANDOM') || sqlUpper.includes('COPY FROM')) {
-    erros.push('Funcao potencialmente perigosa detectada');
-  }
-
-  // Extrair tabelas referenciadas (simplificado)
-  const tabelaRegex = /\b(?:FROM|JOIN)\s+([a-z_][a-z0-9_]*)/gi;
-  const tabelas = new Set<string>();
-  let match;
-  while ((match = tabelaRegex.exec(sql)) !== null) {
-    const tabela = match[1].toLowerCase();
-    tabelas.add(tabela);
-  }
-
-  // Verificar se todas as tabelas estao permitidas
-  for (const tabela of tabelas) {
-    if (!TABELAS_PERMITIDAS.includes(tabela)) {
-      erros.push(`Tabela '${tabela}' nao esta na lista de tabelas permitidas`);
+    const limit = ast.limit?.value;
+    if (!limit || limit.length !== 1 || limit[0].type !== 'number' || !Number.isInteger(limit[0].value)) {
+      erros.push('Consulta deve ter LIMIT para limitar resultados');
+    } else if (limit[0].value < 1 || limit[0].value > 10000) {
+      erros.push('LIMIT maximo é 10000 registros');
     }
+    const funcoes = new Set(['count', 'sum', 'avg', 'min', 'max', 'coalesce', 'round', 'date_trunc', 'extract', 'lower', 'upper']);
+    const visitar = (node: any): void => {
+      if (!node || typeof node !== 'object') return;
+      if (Array.isArray(node)) { node.forEach(visitar); return; }
+      if (node !== ast && node.type === 'select') erros.push('Subconsultas nao permitidas');
+      if (node.type === 'function' || node.type === 'aggr_func') {
+        const nome = typeof node.name === 'string' ? node.name : node.name?.name?.map((n: any) => n.value).join('.');
+        if (!nome || !funcoes.has(nome.toLowerCase())) erros.push('Funcao nao permitida');
+      }
+      Object.values(node).forEach(visitar);
+    };
+    visitar(ast);
+    for (const fonte of ast.from || []) {
+      if (fonte.db || typeof fonte.table !== 'string' || !TABELAS_PERMITIDAS.includes(fonte.table)) {
+        erros.push(`Tabela '${fonte.table || ''}' nao esta na lista de tabelas permitidas`);
+      }
+    }
+  } catch {
+    erros.push('SQL invalido ou nao suportado');
   }
-
-  // Verificar LIMIT obrigatorio
-  if (!/\bLIMIT\s+\d+/i.test(sql)) {
-    erros.push('Consulta deve ter LIMIT para limitar resultados');
-  }
-
-  // Verificar numero maximo de resultados (seguranca)
-  const limitMatch = sql.match(/\bLIMIT\s+(\d+)/i);
-  if (limitMatch && parseInt(limitMatch[1]) > 10000) {
-    erros.push('LIMIT maximo é 10000 registros');
-  }
-
-  return {
-    valido: erros.length === 0,
-    erros
-  };
+  return { valido: erros.length === 0, erros };
 }
 
 // Validacao especifica para visoes

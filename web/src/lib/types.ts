@@ -9,6 +9,7 @@ export interface ResultadoConsulta {
   tempo_execucao_ms: number;
   total_resultados: number;
   sql?: string;
+  explicacao?: string;
   pergunta?: string;
   erro?: string;
   timeout?: boolean;

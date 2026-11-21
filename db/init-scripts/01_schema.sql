@@ -1,8 +1,6 @@
 -- Schema do ERP fictício para o projeto "Pergunte ao ERP"
 -- Execute em um banco PostgreSQL vazio
 
--- Extensões necessárias
-CREATE EXTENSION IF NOT EXISTS pgcrypto;
 
 -- Tabela de clientes
 CREATE TABLE clientes (
@@ -91,17 +89,6 @@ CREATE TABLE condicoes_pagamento (
     desconto_percentual DECIMAL(5,2) DEFAULT 0
 );
 
--- Tabela de parcelas (para títulos)
-CREATE TABLE parcelas (
-    parcela_id SERIAL PRIMARY KEY,
-    titulo_id INTEGER NOT NULL REFERENCES titulos(titulo_id) ON DELETE CASCADE,
-    numero_parcela INTEGER NOT NULL,
-    valor DECIMAL(14,2) NOT NULL,
-    data_vencimento DATE NOT NULL,
-    data_pagamento DATE,
-    status VARCHAR(20) NOT NULL DEFAULT 'ABERTA' CHECK (status IN ('ABERTA', 'PAGA', 'VENCIDA', 'CANCELADA'))
-);
-
 -- Tabela de títulos (contas a pagar/receber)
 CREATE TABLE titulos (
     titulo_id SERIAL PRIMARY KEY,
@@ -115,6 +102,17 @@ CREATE TABLE titulos (
     produto_id INTEGER REFERENCES produtos(produto_id),
     filial_id INTEGER REFERENCES filiais(filial_id),
     status VARCHAR(20) NOT NULL DEFAULT 'ABERTO' CHECK (status IN ('ABERTO', 'PAGO', 'CANCELADO', 'VENCIDO'))
+);
+
+-- Tabela de parcelas (para títulos)
+CREATE TABLE parcelas (
+    parcela_id SERIAL PRIMARY KEY,
+    titulo_id INTEGER NOT NULL REFERENCES titulos(titulo_id) ON DELETE CASCADE,
+    numero_parcela INTEGER NOT NULL,
+    valor DECIMAL(14,2) NOT NULL,
+    data_vencimento DATE NOT NULL,
+    data_pagamento DATE,
+    status VARCHAR(20) NOT NULL DEFAULT 'ABERTA' CHECK (status IN ('ABERTA', 'PAGA', 'VENCIDA', 'CANCELADA'))
 );
 
 -- Tabela de notas fiscais
@@ -202,7 +200,7 @@ SELECT
     t.data_vencimento,
     t.valor,
     t.status,
-    EXTRACT(DAYS FROM (CURRENT_DATE - t.data_vencimento)) AS dias_em_vencimento,
+    (CURRENT_DATE - t.data_vencimento) AS dias_em_vencimento,
     CASE
         WHEN t.status = 'ABERTO' AND t.data_vencimento < CURRENT_DATE THEN 'VENCIDO'
         WHEN t.status = 'ABERTO' AND t.data_vencimento BETWEEN CURRENT_DATE AND CURRENT_DATE + INTERVAL '3 days' THEN 'A VENCER'
@@ -229,7 +227,7 @@ CREATE VIEW v_clientes_inadimplentes AS
 SELECT
     c.cliente_id,
     c.codigo,
-    c.razaoSocial,
+    c.razao_social,
     c.cnpj,
     COUNT(t.titulo_id) AS total_titulos,
     COUNT(CASE WHEN p.status = 'ABERTA' THEN 1 END) AS titulos_em_aberto,
@@ -239,6 +237,6 @@ FROM clientes c
 LEFT JOIN titulos t ON c.cliente_id = t.cliente_fornecedor_id
 LEFT JOIN parcelas p ON t.titulo_id = p.titulo_id
 WHERE c.ativo = TRUE
-GROUP BY c.cliente_id, c.codigo, c.razaoSocial, c.cnpj
+GROUP BY c.cliente_id, c.codigo, c.razao_social, c.cnpj
 HAVING COUNT(CASE WHEN p.status = 'ABERTA' THEN 1 END) > 0
 ORDER BY valor_em_aberto DESC;

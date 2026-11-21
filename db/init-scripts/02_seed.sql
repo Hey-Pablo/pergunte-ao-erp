@@ -93,23 +93,23 @@ INSERT INTO notas_fiscais (numero, serie, data_emissao, data_entrada, valor_tota
 
 -- Inserir itens das notas
 INSERT INTO itens_nota (nota_id, produto_id, quantidade, valor_unitario, quantidade_embalagem) VALUES
-(1001, 1, 1, 4500.00, 1),
-(1002, 11, 1, 85.00, 1),
-(1003, 1, 1, 4500.00, 1),
-(1003, 2, 1, 350.00, 1),
-(1003, 4, 1, 1200.00, 1),
-(1004, 4, 1, 1200.00, 1),
-(1005, 1, 1, 4500.00, 1),
-(1005, 3, 2, 280.00, 2),
-(1005, 20, 1, 220.00, 1),
-(1006, 18, 1, 180.00, 1),
-(1007, 15, 1, 95.00, 1),
-(1008, 12, 1, 150.00, 1),
-(1008, 13, 1, 120.00, 1),
-(1009, 15, 1, 95.00, 1),
-(1010, 1, 1, 4500.00, 1),
-(1010, 6, 5, 12.00, 10),
-(1010, 7, 10, 2.50, 20);
+(1, 1, 1, 4500.00, 1),
+(2, 11, 1, 85.00, 1),
+(3, 1, 1, 4500.00, 1),
+(3, 2, 1, 350.00, 1),
+(3, 4, 1, 1200.00, 1),
+(4, 4, 1, 1200.00, 1),
+(5, 1, 1, 4500.00, 1),
+(5, 3, 2, 280.00, 2),
+(5, 20, 1, 220.00, 1),
+(6, 18, 1, 180.00, 1),
+(7, 15, 1, 95.00, 1),
+(8, 12, 1, 150.00, 1),
+(8, 13, 1, 120.00, 1),
+(9, 15, 1, 95.00, 1),
+(10, 1, 1, 4500.00, 1),
+(10, 6, 5, 12.00, 10),
+(10, 7, 10, 2.50, 20);
 
 -- Inserir movimentos de estoque
 INSERT INTO movimentos_estoque (produto_id, tipo, quantidade, preco_custo, motivo) VALUES
@@ -120,10 +120,10 @@ INSERT INTO movimentos_estoque (produto_id, tipo, quantidade, preco_custo, motiv
 (5, 'ENTRADA', 15, 280.00, 'Compra fornecedor'),
 (6, 'ENTRADA', 200, 8.00, 'Compra material escolar'),
 (7, 'ENTRADA', 500, 2.00, 'Compra material escolar'),
-(1, 'SAÍDA', -1, 3200.00, 'Venda nota 1001'),
-(2, 'SAÍDA', -1, 250.00, 'Venda nota 1002'),
-(3, 'SAÍDA', -1, 200.00, 'Venda nota 1003'),
-(4, 'ENTRY', -1, 900.00, 'Venda nota 1004'),
+(1, 'SAÍDA', 1, 3200.00, 'Venda nota 1001'),
+(2, 'SAÍDA', 1, 250.00, 'Venda nota 1002'),
+(3, 'SAÍDA', 1, 200.00, 'Venda nota 1003'),
+(4, 'SAÍDA', 1, 900.00, 'Venda nota 1004'),
 (11, 'ENTRADA', 20, 70.00, 'Compra fornecedor'),
 (12, 'ENTRADA', 15, 130.00, 'Compra fornecedor'),
 (13, 'ENTRADA', 8, 100.00, 'Compra fornecedor'),
@@ -133,9 +133,6 @@ INSERT INTO movimentos_estoque (produto_id, tipo, quantidade, preco_custo, motiv
 (18, 'ENTRADA', 10, 150.00, 'Compra fornecedor'),
 (19, 'ENTRADA', 8, 200.00, 'Compra fornecedor'),
 (20, 'ENTRADA', 12, 180.00, 'Compra fornecedor');
-
--- Corrigir o tipo do movimento 4
-UPDATE movimentos_estoque SET tipo = 'SAÍDA' WHERE movimento_id = 4;
 
 -- Inserir títulos (contas a pagar/receber)
 INSERT INTO titulos (codigo, tipo, historico, data_emissao, data_vencimento, valor, cliente_fornecedor_id, filial_id, status) VALUES
@@ -156,11 +153,11 @@ INSERT INTO parcelas (titulo_id, numero_parcela, valor, data_vencimento, status)
 (2, 1, 850.00, '2026-11-04', 'ABERTA'),
 (3, 1, 5330.00, '2026-11-09', 'ABERTA'),
 (3, 2, 3470.00, '2026-12-09', 'ABERTA'),
-(4, 1, 1200.00, '2026-11-14', 'ABERTO'),
-(5, 1, 2925.00, '2026-11-19', 'ABERTO'),
-(5, 2, 2925.00, '2026-12-19', 'ABERTO'),
-(6, 1, 220.00, '2026-11-24', 'ABERTO'),
-(7, 1, 130.00, '2026-11-27', 'ABERTO'),
-(8, 1, 1030.00, '2026-12-01', 'ABERTO'),
-(9, 1, 95.00, '2026-11-30', 'ABERTO'),
-(10, 1, 4580.00, '2026-12-05', 'ABERTO');
+(4, 1, 1200.00, '2026-11-14', 'ABERTA'),
+(5, 1, 2925.00, '2026-11-19', 'ABERTA'),
+(5, 2, 2925.00, '2026-12-19', 'ABERTA'),
+(6, 1, 220.00, '2026-11-24', 'ABERTA'),
+(7, 1, 130.00, '2026-11-27', 'ABERTA'),
+(8, 1, 1030.00, '2026-12-01', 'ABERTA'),
+(9, 1, 95.00, '2026-11-30', 'ABERTA'),
+(10, 1, 4580.00, '2026-12-05', 'ABERTA');

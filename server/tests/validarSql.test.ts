@@ -79,3 +79,15 @@ describe('Validador SQL', () => {
     });
   });
 });
+describe('ataques SQL', () => {
+  it.each([
+    'SELECT * FROM clientes LIMIT 1; DROP TABLE clientes',
+    'SELECT * FROM clientes LIMIT 1 -- comentario',
+    'SELECT pg_advisory_lock(1) FROM clientes LIMIT 1',
+    'WITH x AS (DELETE FROM clientes RETURNING *) SELECT * FROM x LIMIT 1',
+    'SELECT * INTO copia FROM clientes LIMIT 1',
+    'SELECT * FROM clientes, pg_catalog.pg_user LIMIT 1',
+    'SELECT * FROM clientes LIMIT 1 UNION SELECT * FROM clientes',
+    'SELECT * FROM clientes LIMIT 1 FOR UPDATE',
+  ])('rejeita %s', (sql) => expect(validarSQL(sql).valido).toBe(false));
+});
