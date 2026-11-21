@@ -1,7 +1,7 @@
 import { Router, Request, Response } from 'express';
 import { Pool } from 'pg';
-import { executarSQL, obterEsquemaVisao } from '../../executar';
-import { validarSQL, validarConsultaVisao } from '../../validarSql';
+import { executarSQL, obterEsquemaVisao } from '../executar';
+import { validarSQL, validarConsultaVisao } from '../validarSql';
 
 export function executarRouter() {
   const router = Router();

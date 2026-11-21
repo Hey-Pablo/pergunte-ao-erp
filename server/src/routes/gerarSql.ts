@@ -1,42 +1,17 @@
 import { Router, Request, Response } from 'express';
-import { AnthropicBedrock } from '@anthropic-ai/sdk';
 
 export function gerarSqlRouter() {
   const router = Router();
 
-  const client = new AnthropicBedrock({
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-    region: process.env.AWS_REGION || 'us-east-1',
-  });
-
   router.post('/', async (req: Request, res: Response) => {
     try {
-      const { pergunta, dicionario } = req.body;
+      const { pergunta } = req.body;
 
       if (!pergunta || typeof pergunta !== 'string') {
         return res.status(400).json({
           erro: 'Campo "pergunta" e obrigatorio e deve ser string'
         });
       }
-
-      const prompt = `Voce e um assistente que converte perguntas em portuges para consultas SQL seguras.
-
-Pergunta do usuario: ${pergunta}
-
-Tabelas disponiveis: clientes, produtos, fornecedores, filiais, titulos, notas_fiscais, itens_nota, movimentos_estoque
-Visoes disponiveis: v_saldo_estoque, v_titulos_vencidos, v_indicadores_faturamento, v_clientes_inadimplentes
-
-Instruces:
-1. Gere uma consulta SQL que responda a pergunta
-2. A consulta deve ser SELECT apenas
-3. Sempre adicione um LIMIT de no maximo 100 resultados
-4. Retorne JSON com: sql, explicacao, confidente (boolean), erros (array)
-
-Exemplo de saida:
-{"sql": "SELECT ...", "explicacao": "...", "confidente": true, "erros": []}
-
-Resposta:`;
 
       const sqlGerado = gerarSQLSimples(pergunta);
 
