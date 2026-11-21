@@ -60,7 +60,7 @@ pergunte-ao-erp/
 
 ## Configurar sua chave
 
-Cada usuário usa sua própria chave de um provedor compatível com a API OpenAI. Para FreeLLMAPI, consulte as instruções do provedor que você executar e obtenha sua própria chave. Copie `.env.example` para `.env`, configure `BASE_URL`, `API_KEY` e `MODEL` e mantenha `.env` fora do Git. O endereço padrão aponta para uma instalação local em `http://localhost:3001/v1`; é necessário iniciar e configurar esse serviço separadamente. Nenhuma chave real é necessária nos testes.
+Cada usuário usa sua própria chave de um provedor compatível com a API OpenAI. Para FreeLLMAPI, siga a [documentação de instalação](https://github.com/emmgmm/FreeLLMAPI/blob/main/docs/en/install/01-install.md), configure suas chaves de provedores no painel e obtenha a chave unificada na página Keys. Copie `.env.example` para `.env`, configure `BASE_URL`, `API_KEY` e `MODEL` e mantenha `.env` fora do Git. O endereço padrão aponta para uma instalação local em `http://localhost:3001/v1`; é necessário iniciar e configurar esse serviço separadamente. Nenhuma chave real é necessária nos testes.
 
 ## Avaliação
 
@@ -71,7 +71,9 @@ set -a; source ../.env; set +a
 npx tsx ../avaliacao/rodar.ts
 ```
 
-O relatório JSON em `avaliacao/relatorios/` registra data, modelo, taxa de acerto e erros de geração, execução, gabarito ou resultado. A comparação ignora a ordem das linhas e nomes das colunas, mas preserva duplicatas e ordem dos valores de cada linha. A taxa só aparece após uma execução real; a meta é 80%. Os dados e relatórios devem ser fictícios e revisados antes de publicar. No PC, rode também PostgreSQL e provedor reais para validar permissões, timeout, conexão e execução completa; os testes automatizados usam PGlite e mocks.
+O relatório JSON em `avaliacao/relatorios/` registra data, modelo, taxa de acerto e erros de geração, execução ou resultado. Uma falha de gabarito interrompe a execução. A comparação ignora a ordem das linhas e nomes das colunas, mas preserva duplicatas e ordem dos valores de cada linha. A taxa só aparece após uma execução real; a meta é 80%. Os dados e relatórios devem ser fictícios e revisados antes de publicar. No PC, rode também PostgreSQL e provedor reais para validar permissões, timeout, conexão e execução completa; os testes automatizados usam PGlite e mocks.
+
+A avaliação registrada pelo Codex usa uma chamada por pergunta com o dicionário, sem os exemplos e a autocorreção do servidor. As saídas brutas ficam em `avaliacao/execucoes/`; o relatório é gerado com `cd server && npx tsx src/relatorioCodex.ts`. Essa medição não representa o fluxo completo da API.
 
 O servidor limita requisições POST a 30 por IP por minuto, em memória por processo. Esse limite reinicia com o servidor e não é compartilhado entre instâncias; produção exige limite compartilhado e autenticação. Cada execução de SQL registra data, duração, resultado e hash SHA-256 do SQL no console, sem registrar o texto nem os resultados. O operador deve definir retenção e proteger os logs; hash não impede adivinhação de consultas conhecidas.
 

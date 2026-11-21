@@ -26,6 +26,7 @@ async function chamarProvedor(prompt: string): Promise<string> {
     body: JSON.stringify({ model: process.env.MODEL || 'auto', messages: [{ role: 'user', content: prompt }], temperature: 0 }),
     signal: AbortSignal.timeout(30000),
   });
+  if (resposta.status === 429) throw Object.assign(new Error('Limite do provedor atingido.'), { code: 'RATE_LIMIT' });
   if (!resposta.ok) throw new Error('Falha no provedor de IA.');
   const corpo: any = await resposta.json();
   return corpo.choices?.[0]?.message?.content;

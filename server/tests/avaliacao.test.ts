@@ -6,6 +6,10 @@ describe('avaliação', () => {
     expect(compararResultados([{ x: 1 }, { x: 2 }], [{ n: 2 }, { n: 1 }])).toBe(true);
     expect(compararResultados([{ x: 1 }, { x: 1 }], [{ n: 1 }, { n: 2 }])).toBe(false);
   });
+  it('interrompe a avaliação em limite do provedor', async () => {
+    const limite = Object.assign(new Error('limite'), { code: 'RATE_LIMIT' });
+    await expect(avaliar([{ pergunta: 'a', sql: 'gabarito' }], async () => { throw limite; }, async () => [])).rejects.toThrow('limite');
+  });
   it('classifica erro de geração e diferença sem inventar acertos', async () => {
     const casos = [{ pergunta: 'a', sql: 'gabarito' }, { pergunta: 'b', sql: 'gabarito' }];
     const gerar = async (p: string) => { if (p === 'a') throw Error('falha'); return 'gerado'; };

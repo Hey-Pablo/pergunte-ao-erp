@@ -1,0 +1,410 @@
+{
+  "data": "2026-11-21T21:51:08.782Z",
+  "ambiente": "PGlite com dados fictícios",
+  "totalPrevisto": 40,
+  "totalExecutado": 40,
+  "acertos": 0,
+  "taxa": 0,
+  "resultados": [
+    {
+      "pergunta": "Liste os nomes de clientes.",
+      "data": "2026-11-21T21:46:03.548Z",
+      "modelo": "gpt-6.2-sol",
+      "sql": "SELECT razao_social\nFROM public.clientes\nLIMIT ALL;",
+      "tipo": "validacao",
+      "detalhes": [
+        "Apenas uma consulta SELECT simples e permitida"
+      ]
+    },
+    {
+      "pergunta": "Quantos registros existem em clientes?",
+      "data": "2026-11-21T21:46:34.949Z",
+      "modelo": "gpt-6.2-sol",
+      "sql": "SELECT COUNT(*) AS total_clientes\nFROM public.clientes\nLIMIT 1;",
+      "tipo": "validacao",
+      "detalhes": [
+        "Apenas uma consulta SELECT simples e permitida"
+      ]
+    },
+    {
+      "pergunta": "Liste os códigos de clientes.",
+      "data": "2026-11-21T21:46:40.377Z",
+      "modelo": "gpt-6.2-sol",
+      "sql": "SELECT codigo\nFROM public.clientes;",
+      "tipo": "validacao",
+      "detalhes": [
+        "Apenas uma consulta SELECT simples e permitida"
+      ]
+    },
+    {
+      "pergunta": "Qual o primeiro código de clientes em ordem alfabética?",
+      "data": "2026-11-21T21:46:46.001Z",
+      "modelo": "gpt-6.2-sol",
+      "sql": "SELECT codigo\nFROM public.clientes\nORDER BY codigo ASC\nLIMIT 1;",
+      "tipo": "validacao",
+      "detalhes": [
+        "Apenas uma consulta SELECT simples e permitida"
+      ]
+    },
+    {
+      "pergunta": "Qual o último código de clientes em ordem alfabética?",
+      "data": "2026-11-21T21:46:51.196Z",
+      "modelo": "gpt-6.2-sol",
+      "sql": "SELECT codigo\nFROM public.clientes\nWHERE codigo IS NOT NULL\nORDER BY codigo DESC\nLIMIT 1;",
+      "tipo": "validacao",
+      "detalhes": [
+        "Apenas uma consulta SELECT simples e permitida"
+      ]
+    },
+    {
+      "pergunta": "Liste os nomes de produtos.",
+      "data": "2026-11-21T21:46:57.490Z",
+      "modelo": "gpt-6.2-sol",
+      "sql": "SELECT descricao\nFROM public.produtos\nLIMIT ALL;",
+      "tipo": "validacao",
+      "detalhes": [
+        "Apenas uma consulta SELECT simples e permitida"
+      ]
+    },
+    {
+      "pergunta": "Quantos registros existem em produtos?",
+      "data": "2026-11-21T21:47:03.599Z",
+      "modelo": "gpt-6.2-sol",
+      "sql": "SELECT COUNT(*) AS total_registros\nFROM public.produtos\nLIMIT 1;",
+      "tipo": "validacao",
+      "detalhes": [
+        "Apenas uma consulta SELECT simples e permitida"
+      ]
+    },
+    {
+      "pergunta": "Liste os códigos de produtos.",
+      "data": "2026-11-21T21:47:09.416Z",
+      "modelo": "gpt-6.2-sol",
+      "sql": "SELECT codigo\nFROM public.produtos\nLIMIT 100;",
+      "tipo": "validacao",
+      "detalhes": [
+        "Apenas uma consulta SELECT simples e permitida"
+      ]
+    },
+    {
+      "pergunta": "Qual o primeiro código de produtos em ordem alfabética?",
+      "data": "2026-11-21T21:47:16.398Z",
+      "modelo": "gpt-6.2-sol",
+      "sql": "SELECT codigo\nFROM public.produtos\nORDER BY codigo ASC\nLIMIT 1;",
+      "tipo": "validacao",
+      "detalhes": [
+        "Apenas uma consulta SELECT simples e permitida"
+      ]
+    },
+    {
+      "pergunta": "Qual o último código de produtos em ordem alfabética?",
+      "data": "2026-11-21T21:47:22.141Z",
+      "modelo": "gpt-6.2-sol",
+      "sql": "SELECT codigo\nFROM public.produtos\nWHERE codigo IS NOT NULL\nORDER BY codigo DESC\nLIMIT 1;",
+      "tipo": "validacao",
+      "detalhes": [
+        "Apenas uma consulta SELECT simples e permitida"
+      ]
+    },
+    {
+      "pergunta": "Liste os nomes de fornecedores.",
+      "data": "2026-11-21T21:47:27.089Z",
+      "modelo": "gpt-6.2-sol",
+      "sql": "SELECT razao_social\nFROM public.fornecedores\nLIMIT ALL;",
+      "tipo": "validacao",
+      "detalhes": [
+        "Apenas uma consulta SELECT simples e permitida"
+      ]
+    },
+    {
+      "pergunta": "Quantos registros existem em fornecedores?",
+      "data": "2026-11-21T21:47:32.078Z",
+      "modelo": "gpt-6.2-sol",
+      "sql": "SELECT COUNT(*) AS total_fornecedores\nFROM public.fornecedores\nLIMIT 1;",
+      "tipo": "validacao",
+      "detalhes": [
+        "Apenas uma consulta SELECT simples e permitida"
+      ]
+    },
+    {
+      "pergunta": "Liste os códigos de fornecedores.",
+      "data": "2026-11-21T21:47:36.843Z",
+      "modelo": "gpt-6.2-sol",
+      "sql": "SELECT codigo\nFROM public.fornecedores\nLIMIT ALL;",
+      "tipo": "validacao",
+      "detalhes": [
+        "Apenas uma consulta SELECT simples e permitida"
+      ]
+    },
+    {
+      "pergunta": "Qual o primeiro código de fornecedores em ordem alfabética?",
+      "data": "2026-11-21T21:47:41.681Z",
+      "modelo": "gpt-6.2-sol",
+      "sql": "SELECT codigo\nFROM public.fornecedores\nORDER BY codigo ASC\nLIMIT 1;",
+      "tipo": "validacao",
+      "detalhes": [
+        "Apenas uma consulta SELECT simples e permitida"
+      ]
+    },
+    {
+      "pergunta": "Qual o último código de fornecedores em ordem alfabética?",
+      "data": "2026-11-21T21:47:46.225Z",
+      "modelo": "gpt-6.2-sol",
+      "sql": "SELECT codigo\nFROM public.fornecedores\nWHERE codigo IS NOT NULL\nORDER BY codigo DESC\nLIMIT 1;",
+      "tipo": "validacao",
+      "detalhes": [
+        "Apenas uma consulta SELECT simples e permitida"
+      ]
+    },
+    {
+      "pergunta": "Liste os nomes de filiais.",
+      "data": "2026-11-21T21:47:52.680Z",
+      "modelo": "gpt-6.2-sol",
+      "sql": "SELECT nome\nFROM public.filiais;",
+      "tipo": "validacao",
+      "detalhes": [
+        "Apenas uma consulta SELECT simples e permitida"
+      ]
+    },
+    {
+      "pergunta": "Quantos registros existem em filiais?",
+      "data": "2026-11-21T21:47:57.877Z",
+      "modelo": "gpt-6.2-sol",
+      "sql": "SELECT COUNT(*) AS total_filiais\nFROM public.filiais\nLIMIT 1;",
+      "tipo": "validacao",
+      "detalhes": [
+        "Apenas uma consulta SELECT simples e permitida"
+      ]
+    },
+    {
+      "pergunta": "Liste os códigos de filiais.",
+      "data": "2026-11-21T21:48:02.464Z",
+      "modelo": "gpt-6.2-sol",
+      "sql": "SELECT codigo\nFROM public.filiais;",
+      "tipo": "validacao",
+      "detalhes": [
+        "Apenas uma consulta SELECT simples e permitida"
+      ]
+    },
+    {
+      "pergunta": "Qual o primeiro código de filiais em ordem alfabética?",
+      "data": "2026-11-21T21:48:07.990Z",
+      "modelo": "gpt-6.2-sol",
+      "sql": "SELECT codigo\nFROM public.filiais\nORDER BY codigo ASC\nLIMIT 1;",
+      "tipo": "validacao",
+      "detalhes": [
+        "Apenas uma consulta SELECT simples e permitida"
+      ]
+    },
+    {
+      "pergunta": "Qual o último código de filiais em ordem alfabética?",
+      "data": "2026-11-21T21:48:12.965Z",
+      "modelo": "gpt-6.2-sol",
+      "sql": "SELECT codigo\nFROM public.filiais\nORDER BY codigo DESC NULLS LAST\nLIMIT 1;",
+      "tipo": "validacao",
+      "detalhes": [
+        "Apenas uma consulta SELECT simples e permitida"
+      ]
+    },
+    {
+      "pergunta": "Quantos títulos existem?",
+      "data": "2026-11-21T21:48:18.130Z",
+      "modelo": "gpt-6.2-sol",
+      "sql": "SELECT COUNT(*) AS total_titulos\nFROM public.titulos\nLIMIT 1;",
+      "tipo": "validacao",
+      "detalhes": [
+        "Apenas uma consulta SELECT simples e permitida"
+      ]
+    },
+    {
+      "pergunta": "Qual é a soma de valor em títulos?",
+      "data": "2026-11-21T21:48:23.081Z",
+      "modelo": "gpt-6.2-sol",
+      "sql": "SELECT SUM(valor) AS soma_valor_titulos\nFROM public.titulos\nLIMIT 1;",
+      "tipo": "validacao",
+      "detalhes": [
+        "Apenas uma consulta SELECT simples e permitida"
+      ]
+    },
+    {
+      "pergunta": "Qual é a média de valor em títulos?",
+      "data": "2026-11-21T21:48:28.597Z",
+      "modelo": "gpt-6.2-sol",
+      "sql": "SELECT AVG(valor) AS media_valor\nFROM public.titulos\nLIMIT 1;",
+      "tipo": "validacao",
+      "detalhes": [
+        "Apenas uma consulta SELECT simples e permitida"
+      ]
+    },
+    {
+      "pergunta": "Qual é o maior valor de valor em títulos?",
+      "data": "2026-11-21T21:48:33.448Z",
+      "modelo": "gpt-6.2-sol",
+      "sql": "SELECT MAX(valor) AS maior_valor\nFROM public.titulos\nLIMIT 1;",
+      "tipo": "validacao",
+      "detalhes": [
+        "Apenas uma consulta SELECT simples e permitida"
+      ]
+    },
+    {
+      "pergunta": "Qual é o menor valor de valor em títulos?",
+      "data": "2026-11-21T21:48:38.354Z",
+      "modelo": "gpt-6.2-sol",
+      "sql": "SELECT MIN(valor) AS menor_valor\nFROM public.titulos\nLIMIT 1;",
+      "tipo": "validacao",
+      "detalhes": [
+        "Apenas uma consulta SELECT simples e permitida"
+      ]
+    },
+    {
+      "pergunta": "Quantos notas fiscais existem?",
+      "data": "2026-11-21T21:48:42.967Z",
+      "modelo": "gpt-6.2-sol",
+      "sql": "SELECT COUNT(*) AS total_notas_fiscais\nFROM public.notas_fiscais\nWHERE status = 'EMITIDA'\nLIMIT 1;",
+      "tipo": "validacao",
+      "detalhes": [
+        "Apenas uma consulta SELECT simples e permitida"
+      ]
+    },
+    {
+      "pergunta": "Qual é a soma de valor_total em notas fiscais?",
+      "data": "2026-11-21T21:48:47.719Z",
+      "modelo": "gpt-6.2-sol",
+      "sql": "SELECT SUM(valor_total) AS soma_valor_total\nFROM public.notas_fiscais\nWHERE status = 'EMITIDA'\nLIMIT 1;",
+      "tipo": "validacao",
+      "detalhes": [
+        "Apenas uma consulta SELECT simples e permitida"
+      ]
+    },
+    {
+      "pergunta": "Qual é a média de valor_total em notas fiscais?",
+      "data": "2026-11-21T21:48:53.649Z",
+      "modelo": "gpt-6.2-sol",
+      "sql": "SELECT AVG(valor_total) AS media_valor_total\nFROM public.notas_fiscais\nWHERE status = 'EMITIDA'\nLIMIT 1;",
+      "tipo": "validacao",
+      "detalhes": [
+        "Apenas uma consulta SELECT simples e permitida"
+      ]
+    },
+    {
+      "pergunta": "Qual é o maior valor de valor_total em notas fiscais?",
+      "data": "2026-11-21T21:48:58.312Z",
+      "modelo": "gpt-6.2-sol",
+      "sql": "SELECT MAX(valor_total) AS maior_valor_total\nFROM public.notas_fiscais\nWHERE status = 'EMITIDA'\nLIMIT 1;",
+      "tipo": "validacao",
+      "detalhes": [
+        "Apenas uma consulta SELECT simples e permitida"
+      ]
+    },
+    {
+      "pergunta": "Qual é o menor valor de valor_total em notas fiscais?",
+      "data": "2026-11-21T21:49:03.617Z",
+      "modelo": "gpt-6.2-sol",
+      "sql": "SELECT MIN(valor_total) AS menor_valor_total\nFROM public.notas_fiscais\nWHERE status = 'EMITIDA'\nLIMIT 1;",
+      "tipo": "validacao",
+      "detalhes": [
+        "Apenas uma consulta SELECT simples e permitida"
+      ]
+    },
+    {
+      "pergunta": "Quantos itens de nota existem?",
+      "data": "2026-11-21T21:49:08.367Z",
+      "modelo": "gpt-6.2-sol",
+      "sql": "SELECT COUNT(*) AS total_itens_nota\nFROM public.itens_nota\nLIMIT 1;",
+      "tipo": "validacao",
+      "detalhes": [
+        "Apenas uma consulta SELECT simples e permitida"
+      ]
+    },
+    {
+      "pergunta": "Qual é a soma de quantidade em itens de nota?",
+      "data": "2026-11-21T21:49:12.892Z",
+      "modelo": "gpt-6.2-sol",
+      "sql": "SELECT SUM(quantidade) AS soma_quantidade\nFROM public.itens_nota\nLIMIT 1;",
+      "tipo": "validacao",
+      "detalhes": [
+        "Apenas uma consulta SELECT simples e permitida"
+      ]
+    },
+    {
+      "pergunta": "Qual é a média de quantidade em itens de nota?",
+      "data": "2026-11-21T21:49:19.264Z",
+      "modelo": "gpt-6.2-sol",
+      "sql": "SELECT AVG(quantidade) AS media_quantidade\nFROM public.itens_nota\nLIMIT 1;",
+      "tipo": "validacao",
+      "detalhes": [
+        "Apenas uma consulta SELECT simples e permitida"
+      ]
+    },
+    {
+      "pergunta": "Qual é o maior valor de quantidade em itens de nota?",
+      "data": "2026-11-21T21:49:26.418Z",
+      "modelo": "gpt-6.2-sol",
+      "sql": "SELECT MAX(quantidade) AS maior_quantidade\nFROM public.itens_nota\nLIMIT 1;",
+      "tipo": "validacao",
+      "detalhes": [
+        "Apenas uma consulta SELECT simples e permitida"
+      ]
+    },
+    {
+      "pergunta": "Qual é o menor valor de quantidade em itens de nota?",
+      "data": "2026-11-21T21:49:35.575Z",
+      "modelo": "gpt-6.2-sol",
+      "sql": "SELECT MIN(quantidade) AS menor_quantidade\nFROM public.itens_nota\nLIMIT 1;",
+      "tipo": "validacao",
+      "detalhes": [
+        "Apenas uma consulta SELECT simples e permitida"
+      ]
+    },
+    {
+      "pergunta": "Quantos movimentos de estoque existem?",
+      "data": "2026-11-21T21:49:44.101Z",
+      "modelo": "gpt-6.2-sol",
+      "sql": "SELECT COUNT(*) AS total_movimentos\nFROM public.movimentos_estoque\nLIMIT 1;",
+      "tipo": "validacao",
+      "detalhes": [
+        "Apenas uma consulta SELECT simples e permitida"
+      ]
+    },
+    {
+      "pergunta": "Qual é a soma de quantidade em movimentos de estoque?",
+      "data": "2026-11-21T21:49:49.480Z",
+      "modelo": "gpt-6.2-sol",
+      "sql": "SELECT SUM(quantidade) AS soma_quantidade\nFROM public.movimentos_estoque\nLIMIT 1;",
+      "tipo": "validacao",
+      "detalhes": [
+        "Apenas uma consulta SELECT simples e permitida"
+      ]
+    },
+    {
+      "pergunta": "Qual é a média de quantidade em movimentos de estoque?",
+      "data": "2026-11-21T21:49:54.315Z",
+      "modelo": "gpt-6.2-sol",
+      "sql": "SELECT AVG(quantidade) AS media_quantidade\nFROM public.movimentos_estoque\nLIMIT 1;",
+      "tipo": "validacao",
+      "detalhes": [
+        "Apenas uma consulta SELECT simples e permitida"
+      ]
+    },
+    {
+      "pergunta": "Qual é o maior valor de quantidade em movimentos de estoque?",
+      "data": "2026-11-21T21:49:59.274Z",
+      "modelo": "gpt-6.2-sol",
+      "sql": "SELECT MAX(quantidade) AS maior_quantidade\nFROM public.movimentos_estoque\nLIMIT 1;",
+      "tipo": "validacao",
+      "detalhes": [
+        "Apenas uma consulta SELECT simples e permitida"
+      ]
+    },
+    {
+      "pergunta": "Qual é o menor valor de quantidade em movimentos de estoque?",
+      "data": "2026-11-21T21:50:05.468Z",
+      "modelo": "gpt-6.2-sol",
+      "sql": "SELECT MIN(quantidade) AS menor_quantidade\nFROM public.movimentos_estoque\nLIMIT 1;",
+      "tipo": "validacao",
+      "detalhes": [
+        "Apenas uma consulta SELECT simples e permitida"
+      ]
+    }
+  ]
+}

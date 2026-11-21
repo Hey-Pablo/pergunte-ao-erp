@@ -10,7 +10,7 @@ export async function avaliar(casos: Caso[], gerar: (p: string) => Promise<strin
     let esperado: Linha[];
     try { esperado = await consultar(caso.sql); } catch { throw new Error(`Falha no gabarito: ${caso.pergunta}`); }
     let sql: string;
-    try { sql = await gerar(caso.pergunta); } catch { resultados.push({ pergunta: caso.pergunta, tipo: 'geracao' }); continue; }
+    try { sql = await gerar(caso.pergunta); } catch (erro) { if ((erro as { code?: string })?.code === 'RATE_LIMIT') throw erro; resultados.push({ pergunta: caso.pergunta, tipo: 'geracao' }); continue; }
     try {
       const obtido = await consultar(sql);
       resultados.push({ pergunta: caso.pergunta, sql, tipo: compararResultados(esperado, obtido) ? 'acerto' : 'resultado' });
