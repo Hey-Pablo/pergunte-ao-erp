@@ -243,8 +243,6 @@ visoes:
         descricao: "Valor do titulo"
       - nome: status
         descricao: "Status atual"
-      - nome: dias_em_vencimento
-        descricao: "Dias em atraso"
       - nome: classificacao_vencimento
         descricao: "Classificacao: VENCIDO, A VENCER ou status atual"
 
