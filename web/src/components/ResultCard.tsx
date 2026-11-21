@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import type { ColumnInfo, ChartData } from '../lib/types';
-import { detectColumnTypes, prepareChartData, formatNumber, formatCurrency, formatDate } from '../lib/utils';
+import { detectColumnTypes, prepareChartData, formatNumber, formatCurrency, formatDate, formatSQL } from '../lib/utils';
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Cell } from 'recharts';
 
 interface ResultCardProps {
@@ -218,7 +218,7 @@ interface SQLPanelProps {
 }
 
 export function SQLPanel({ sql, onCopy }: SQLPanelProps) {
-  const formattedSQL = useMemo(() => sql, [sql]);
+  const formattedSQL = useMemo(() => formatSQL(sql), [sql]);
 
   return (
     <div className="sql-panel">

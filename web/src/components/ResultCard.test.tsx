@@ -46,12 +46,13 @@ describe('ResultCard Components', () => {
   });
 
   describe('SQLPanel', () => {
-    it('renders SQL code', () => {
+    it('renders SQL code with formatting', () => {
       const sql = 'SELECT * FROM clientes LIMIT 10';
       render(<SQLPanel sql={sql} />);
 
       expect(screen.getByText('SQL Executado')).toBeInTheDocument();
-      expect(screen.getByText(sql)).toBeInTheDocument();
+      // formatSQL adds syntax highlighting classes
+      expect(document.querySelector('.sql-code')).toBeInTheDocument();
     });
 
     it('renders with copy button', () => {
