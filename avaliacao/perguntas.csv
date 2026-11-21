@@ -1,0 +1,41 @@
+pergunta,sql
+Liste os nomes de clientes.,SELECT razao_social FROM clientes LIMIT 100
+Quantos registros existem em clientes?,SELECT COUNT(*) FROM clientes LIMIT 100
+Liste os códigos de clientes.,SELECT codigo FROM clientes LIMIT 100
+Qual o primeiro código de clientes em ordem alfabética?,SELECT codigo FROM clientes ORDER BY codigo LIMIT 1
+Qual o último código de clientes em ordem alfabética?,SELECT codigo FROM clientes ORDER BY codigo DESC LIMIT 1
+Liste os nomes de produtos.,SELECT descricao FROM produtos LIMIT 100
+Quantos registros existem em produtos?,SELECT COUNT(*) FROM produtos LIMIT 100
+Liste os códigos de produtos.,SELECT codigo FROM produtos LIMIT 100
+Qual o primeiro código de produtos em ordem alfabética?,SELECT codigo FROM produtos ORDER BY codigo LIMIT 1
+Qual o último código de produtos em ordem alfabética?,SELECT codigo FROM produtos ORDER BY codigo DESC LIMIT 1
+Liste os nomes de fornecedores.,SELECT razao_social FROM fornecedores LIMIT 100
+Quantos registros existem em fornecedores?,SELECT COUNT(*) FROM fornecedores LIMIT 100
+Liste os códigos de fornecedores.,SELECT codigo FROM fornecedores LIMIT 100
+Qual o primeiro código de fornecedores em ordem alfabética?,SELECT codigo FROM fornecedores ORDER BY codigo LIMIT 1
+Qual o último código de fornecedores em ordem alfabética?,SELECT codigo FROM fornecedores ORDER BY codigo DESC LIMIT 1
+Liste os nomes de filiais.,SELECT nome FROM filiais LIMIT 100
+Quantos registros existem em filiais?,SELECT COUNT(*) FROM filiais LIMIT 100
+Liste os códigos de filiais.,SELECT codigo FROM filiais LIMIT 100
+Qual o primeiro código de filiais em ordem alfabética?,SELECT codigo FROM filiais ORDER BY codigo LIMIT 1
+Qual o último código de filiais em ordem alfabética?,SELECT codigo FROM filiais ORDER BY codigo DESC LIMIT 1
+Quantos títulos existem?,SELECT COUNT(*) FROM titulos LIMIT 100
+Qual é a soma de valor em títulos?,SELECT SUM(valor) FROM titulos LIMIT 100
+Qual é a média de valor em títulos?,SELECT AVG(valor) FROM titulos LIMIT 100
+Qual é o maior valor de valor em títulos?,SELECT MAX(valor) FROM titulos LIMIT 100
+Qual é o menor valor de valor em títulos?,SELECT MIN(valor) FROM titulos LIMIT 100
+Quantos notas fiscais existem?,SELECT COUNT(*) FROM notas_fiscais LIMIT 100
+Qual é a soma de valor_total em notas fiscais?,SELECT SUM(valor_total) FROM notas_fiscais LIMIT 100
+Qual é a média de valor_total em notas fiscais?,SELECT AVG(valor_total) FROM notas_fiscais LIMIT 100
+Qual é o maior valor de valor_total em notas fiscais?,SELECT MAX(valor_total) FROM notas_fiscais LIMIT 100
+Qual é o menor valor de valor_total em notas fiscais?,SELECT MIN(valor_total) FROM notas_fiscais LIMIT 100
+Quantos itens de nota existem?,SELECT COUNT(*) FROM itens_nota LIMIT 100
+Qual é a soma de quantidade em itens de nota?,SELECT SUM(quantidade) FROM itens_nota LIMIT 100
+Qual é a média de quantidade em itens de nota?,SELECT AVG(quantidade) FROM itens_nota LIMIT 100
+Qual é o maior valor de quantidade em itens de nota?,SELECT MAX(quantidade) FROM itens_nota LIMIT 100
+Qual é o menor valor de quantidade em itens de nota?,SELECT MIN(quantidade) FROM itens_nota LIMIT 100
+Quantos movimentos de estoque existem?,SELECT COUNT(*) FROM movimentos_estoque LIMIT 100
+Qual é a soma de quantidade em movimentos de estoque?,SELECT SUM(quantidade) FROM movimentos_estoque LIMIT 100
+Qual é a média de quantidade em movimentos de estoque?,SELECT AVG(quantidade) FROM movimentos_estoque LIMIT 100
+Qual é o maior valor de quantidade em movimentos de estoque?,SELECT MAX(quantidade) FROM movimentos_estoque LIMIT 100
+Qual é o menor valor de quantidade em movimentos de estoque?,SELECT MIN(quantidade) FROM movimentos_estoque LIMIT 100

@@ -1,4 +1,5 @@
-import { Parser } from 'node-sql-parser';
+import sqlParser from 'node-sql-parser';
+const { Parser } = sqlParser;
 
 // Tabelas permitidas para consultas
 const TABELAS_PERMITIDAS = [
@@ -45,7 +46,8 @@ export function validarSQL(sql: string): ResultadoValidacao {
   }
   if (/--|\/\*|\*\//.test(sql)) return { valido: false, erros: ['Comentarios nao permitidos'] };
   try {
-    const ast: any = new Parser().astify(sql, { database: 'Postgresql' });
+    const sqlSemTerminador = sql.trim().replace(/;$/, '');
+    const ast: any = new Parser().astify(sqlSemTerminador, { database: 'Postgresql' });
     if (Array.isArray(ast) || ast.type !== 'select' || ast.with || ast._next || ast.into?.position || ast.locking_read) {
       return { valido: false, erros: ['Apenas uma consulta SELECT simples e permitida'] };
     }
@@ -68,7 +70,7 @@ export function validarSQL(sql: string): ResultadoValidacao {
     };
     visitar(ast);
     for (const fonte of ast.from || []) {
-      if (fonte.db || typeof fonte.table !== 'string' || !TABELAS_PERMITIDAS.includes(fonte.table)) {
+      if ((fonte.db && fonte.db !== 'public') || typeof fonte.table !== 'string' || !TABELAS_PERMITIDAS.includes(fonte.table)) {
         erros.push(`Tabela '${fonte.table || ''}' nao esta na lista de tabelas permitidas`);
       }
     }

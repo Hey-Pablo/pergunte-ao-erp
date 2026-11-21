@@ -91,3 +91,17 @@ describe('ataques SQL', () => {
     'SELECT * FROM clientes LIMIT 1 FOR UPDATE',
   ])('rejeita %s', (sql) => expect(validarSQL(sql).valido).toBe(false));
 });
+
+describe('SQL com esquema público e terminador', () => {
+  it.each([
+    'SELECT * FROM clientes LIMIT 10;',
+    'SELECT * FROM public.clientes LIMIT 10',
+    'SELECT * FROM public.clientes LIMIT 10;'
+  ])('aceita %s', sql => expect(validarSQL(sql).valido).toBe(true));
+  it.each([
+    'SELECT * FROM private.clientes LIMIT 10;',
+    'SELECT * FROM public.seg resto LIMIT 10;',
+    'SELECT * FROM public.clientes LIMIT 1; SELECT * FROM clientes LIMIT 1',
+    'SELECT * FROM public.clientes LIMIT 1;;'
+  ])('rejeita %s', sql => expect(validarSQL(sql).valido).toBe(false));
+});
