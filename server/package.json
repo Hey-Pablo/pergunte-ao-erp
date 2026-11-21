@@ -12,7 +12,12 @@
     "type-check": "tsc --noEmit",
     "lint": "eslint src/**/*.ts --fix"
   },
-  "keywords": ["erp", "sql", "api", "typescript"],
+  "keywords": [
+    "erp",
+    "sql",
+    "api",
+    "typescript"
+  ],
   "author": "Pablo Dilio",
   "license": "ISC",
   "type": "module",
@@ -36,7 +41,6 @@
     "@types/node": "^22.0.0",
     "@types/pg": "^8.6.6",
     "ts-node": "^10.9.2",
-    "vitest": "^2.1.9",
-    "vitest/globals": "^2.1.9"
+    "vitest": "^2.1.9"
   }
 }
