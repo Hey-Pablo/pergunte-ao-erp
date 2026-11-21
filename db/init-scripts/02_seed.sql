@@ -1,95 +1,47 @@
--- Dados fictícios para demonstração
+-- Dados ficticios de exemplo para demonstracao
 -- Execute após o script de schema
 
--- Inserir categorias
-INSERT INTO categorias (nome, descricao) VALUES
-('Eletronicos', 'Produtos eletronicos e informatica'),
-('Matematica', 'Material escolar e escritorio'),
-('Informatica', 'Hardware, perifericos e software'),
-('Vestuario', 'Roupa e calcalgos'),
-('Livros', 'Livros didaticos e literatura');
-
--- Inserir unidades de medida
-INSERT INTO unidades_medida (sigla, descricao) VALUES
-('UN', 'Unidade'),
-('KG', 'Quilograma'),
-('LT', 'Litro'),
-('CX', 'Caixa'),
-('PX', 'Pacote');
-
 -- Inserir filiais
-INSERT INTO filiais (codigo, nome, cidade, estado) VALUES
-('001', 'Sede - São Paulo', 'São Paulo', 'SP'),
-('002', 'Filial - Rio de Janeiro', 'Rio de Janeiro', 'RJ'),
-('003', 'Filial - Belo Horizonte', 'Belo Horizonte', 'MG'),
-('004', 'Filial - Porto Alegre', 'Porto Alegre', 'RS'),
-('005', 'Filial - Curitiba', 'Curitiba', 'PR');
+INSERT INTO filiais (codigo, nome, cidade, estado, ativa) VALUES
+('001', 'Sede - Sao Paulo', 'Sao Paulo', 'SP', true),
+('002', 'Filial - Rio de Janeiro', 'Rio de Janeiro', 'RJ', true),
+('003', 'Filial - Belo Horizonte', 'Belo Horizonte', 'MG', true);
 
 -- Inserir vendedores
 INSERT INTO vendedores (codigo, nome, comissao_percentual) VALUES
 ('V001', 'Carlos Silva', 5.00),
-('V002', 'Maria Santos', 4.50),
-('V003', 'Jose Pereira', 5.50),
-('V004', 'Ana Costa', 6.00);
+('V002', 'Maria Santos', 4.50);
+
+-- Inserir categorias
+INSERT INTO categorias (nome, descricao) VALUES
+('Eletronicos', 'Produtos eletronicos'),
+('Informatica', 'Hardware e software'),
+('Material Escolar', 'Material didatico');
 
 -- Inserir clientes ficticios
 INSERT INTO clientes (codigo, razao_social, cnpj, email, cidade, estado, ativo) VALUES
-('CLI001', 'Empresa Ficticia A LTDA', '12345678000191', 'contato@testea.com', 'São Paulo', 'SP', TRUE),
-('CLI002', 'Empresa Ficticia B ME', '98765432000155', 'contato@testeb.com', 'Rio de Janeiro', 'RJ', TRUE),
-('CLI003', 'Comercio Ficticio C EIRELI', '11111111000191', 'contato@testec.com', 'Belo Horizonte', 'MG', TRUE),
-('CLI004', 'Padaria D S/A', '22222222000191', 'contato@tested.com', 'Porto Alegre', 'RS', TRUE),
-('CLI005', 'Mercado E Ltda', '33333333000191', 'contato@testee.com', 'Curitiba', 'PR', TRUE),
-('CLI006', 'Servicos Ficticios F', '44444444000191', 'contato@testef.com', 'São Paulo', 'SP', TRUE),
-('CLI007', 'Industria G LTDA', '55555555000191', 'contato@testeg.com', 'Fortaleza', 'CE', TRUE),
-('CLI008', 'Construcao H S/A', '66666666000191', 'contato@testeh.com', 'Manaus', 'AM', TRUE),
-('CLI009', 'Transporte I Ltda', '77777777000191', 'contato@testei.com', 'Recife', 'PE', TRUE),
-('CLI010', 'Alimentos J ME', '88888888000191', 'contato@testej.com', 'Salvador', 'BA', TRUE),
-('CLI011', 'Farmacia K LTDA', '99999999000191', 'contato@testek.com', 'São Paulo', 'SP', FALSE),
-('CLI012', 'Lojas L S/A', '00000000000191', 'contato@testel.com', 'São Paulo', 'SP', TRUE);
+('CLI001', 'Empresa Ficticia A LTDA', '12345678000191', 'contato@testea.com', 'Sao Paulo', 'SP', true),
+('CLI002', 'Empresa Ficticia B ME', '98765432000155', 'contato@testeb.com', 'Rio de Janeiro', 'RJ', true),
+('CLI003', 'Comercio Ficticio C', '11111111000191', 'contato@testec.com', 'Belo Horizonte', 'MG', true);
 
 -- Inserir produtos ficticios
 INSERT INTO produtos (codigo, descricao, ncm, categoria, preco_venda, estoque_minimo) VALUES
 ('PROD001', 'Notebook Dell Inspiron 15', '84715900', 'Informatica', 4500.00, 5),
 ('PROD002', 'Mouse Logitech MX Master 3', '84715900', 'Informatica', 350.00, 10),
 ('PROD003', 'Teclado Mecânico Redragon K552', '84715900', 'Informatica', 280.00, 10),
-('PROD004', 'Monitor 24" LG UltraWide', '84715900', 'Informatica', 1200.00, 3),
-('PROD005', 'HD Externo 1TB Seagate', '84715900', 'Informatica', 350.00, 5),
-('PROD006', 'Caderno Didatico A5 100 folhas', '49018100', 'Matematica', 12.00, 50),
-('PROD007', 'Caneta Bic Preta Refil', '49018100', 'Matematica', 2.50, 100),
-('PROD008', 'Lápis Matemático 2B', '49018100', 'Matematica', 5.00, 100),
-('PROD009', 'Régua de Aço 30cm', '49018100', 'Matematica', 8.00, 50),
-('PROD010', 'Corretor Automático', '49018100', 'Matematica', 15.00, 50),
-('PROD011', 'Camiseta Mascote Tecnologia', '61041900', 'Vestuario', 85.00, 10),
-('PROD012', 'Calça Jeans Social Preta', '61041900', 'Vestuario', 150.00, 10),
-('PROD013', 'Moletom Cozinha Preto', '61041900', 'Vestuario', 120.00, 5),
-('PROD014', 'Chaveiro de Caneta USB', '49018100', 'Matematica', 45.00, 50),
-('PROD015', 'Livro Programacao JS Básico', '49018100', 'Livros', 95.00, 3),
-('PROD016', 'Livro Algoritmos para Iniciantes', '49018100', 'Livros', 120.00, 2),
-('PROD017', 'Livro SQL para Desenvolvedores', '49018100', 'Livros', 130.00, 3),
-('PROD018', 'Adaptador USB-C HDMI 4K', '85176200', 'Informatica', 180.00, 5),
-('PROD019', 'Webcam Logitech C920', '85176200', 'Informatica', 280.00, 3),
-('PROD020', 'Fone de Ouvido Bluetooth JBL', '85183000', 'Informatica', 220.00, 5);
+('PROD004', 'Monitor 24" LG UltraWide', '84715900', 'Informatica', 1200.00, 3);
 
 -- Inserir condicoes de pagamento
 INSERT INTO condicoes_pagamento (nome, praze_dias, juros_percentual, desconto_percentual) VALUES
-('Pagamento à Vista', 0, 0, 5.00),
-('À 30 Dias', 30, 0, 0),
-('À 60 Dias', 60, 1.00, 0),
-('À 90 Dias', 90, 2.00, 0),
-('Parcelado 12x', 365, 0, 0);
+('Pagamento a Vista', 0, 0, 5.00),
+('A 30 Dias', 30, 0, 0),
+('A 60 Dias', 60, 1.00, 0);
 
--- Inserir notas fiscais e itens
+-- Inserir notas fiscais
 INSERT INTO notas_fiscais (numero, serie, data_emissao, data_entrada, valor_total, valor_icms, cliente_id, filial_id, chave_acesso, status) VALUES
 (1001, 'N', '2026-10-01', '2026-10-01', 4500.00, 378.00, 1, 1, '11000100123456789012345678901234567890123456', 'EMITIDA'),
 (1002, 'N', '2026-10-05', '2026-10-05', 850.00, 70.85, 2, 2, '11000200123456789012345678901234567890123457', 'EMITIDA'),
-(1003, 'N', '2026-10-10', '2026-10-10', 5330.00, 444.05, 3, 3, '11000300123456789012345678901234567890123458', 'EMITIDA'),
-(1004, 'N', '2026-10-15', '2026-10-15', 1200.00, 100.00, 4, 4, '11000400123456789012345678901234567890123459', 'EMITIDA'),
-(1005, 'N', '2026-10-20', '2026-10-20', 5850.00, 486.75, 5, 5, '11000500123456789012345678901234567890123460', 'EMITIDA'),
-(1006, 'N', '2026-10-25', '2026-10-25', 220.00, 18.36, 6, 1, '11000100123456789012345678901234567890123461', 'EMITIDA'),
-(1007, 'N', '2026-10-28', '2026-10-28', 130.00, 10.85, 7, 2, '11000200123456789012345678901234567890123462', 'EMITIDA'),
-(1008, 'N', '2026-10-30', '2026-10-30', 1030.00, 85.75, 8, 3, '11000300123456789012345678901234567890123463', 'EMITIDA'),
-(1009, 'N', '2026-11-02', '2026-11-02', 95.00, 7.91, 9, 4, '11000400123456789012345678901234567890123464', 'EMITIDA'),
-(1010, 'N', '2026-11-05', '2026-11-05', 4580.00, 382.20, 10, 5, '11000500123456789012345678901234567890123465', 'EMITIDA');
+(1003, 'N', '2026-10-10', '2026-10-10', 5330.00, 444.05, 3, 3, '11000300123456789012345678901234567890123458', 'EMITIDA');
 
 -- Inserir itens das notas
 INSERT INTO itens_nota (nota_id, produto_id, quantidade, valor_unitario, quantidade_embalagem) VALUES

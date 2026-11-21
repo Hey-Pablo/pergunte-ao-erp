@@ -7,31 +7,22 @@ export interface ResultadoExplicacao {
 export function explicarSQL(sql: string): ResultadoExplicacao {
   const sqlUpper = sql.trim().toUpperCase();
 
-  // Detectar tipo de consulta
   let tipoConsulta = 'SELECT';
   let tabelaPrincipal = '';
 
-  // Extrair tabela principal
   const fromMatch = sqlUpper.match(/\bFROM\s+([a-z_][a-z0-9_]*)/i);
   if (fromMatch) {
     tabelaPrincipal = fromMatch[1];
   }
 
-  // Verificar agregacoes
   if (/\bSUM\s*\(|COUNT\s*\(|AVG\s*\(|MIN\s*\(|MAX\s*\(/i.test(sql)) {
     tipoConsulta = 'Agregacao';
   }
 
-  // Verificar JOINs
   const temJoin = /\bJOIN\s+/i.test(sql);
-
-  // Verificar GROUP BY
   const temGroupBy = /\bGROUP\s+BY\b/i.test(sql);
-
-  // Verificar ORDER BY
   const temOrderBy = /\bORDER\s+BY\b/i.test(sql);
 
-  // Gerar explicacao
   let explicacao = '';
 
   if (tabelaPrincipal) {
@@ -60,7 +51,6 @@ export function explicarSQL(sql: string): ResultadoExplicacao {
 
   explicacao += '.';
 
-  // Detalhar colunas selecionadas
   const columnsMatch = sqlUpper.match(/SELECT\s+(.*?)\s+FROM/i);
   if (columnsMatch) {
     const colunas = columnsMatch[1].split(',').map(c => c.trim()).filter(c => c && c !== '*');
@@ -69,14 +59,9 @@ export function explicarSQL(sql: string): ResultadoExplicacao {
     }
   }
 
-  return {
-    explicacao,
-    tabelaPrincipal,
-    tipoConsulta
-  };
+  return { explicacao, tabelaPrincipal, tipoConsulta };
 }
 
-// Tratar erros de execucao e fornecer mensagem amigavel
 export function tratarErroSQL(erro: string): string {
   const erroLower = erro.toLowerCase();
 

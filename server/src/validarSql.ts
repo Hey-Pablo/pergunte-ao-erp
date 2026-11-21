@@ -2,18 +2,10 @@ import { Parser } from 'node-sql-parser';
 
 // Tabelas permitidas para consultas
 const TABELAS_PERMITIDAS = [
-  'clientes',
-  'produtos',
-  'fornecedores',
-  'filiais',
-  'titulos',
-  'notas_fiscais',
-  'itens_nota',
-  'movimentos_estoque',
-  'v_saldo_estoque',
-  'v_titulos_vencidos',
-  'v_indicadores_faturamento',
-  'v_clientes_inadimplentes'
+  'clientes', 'produtos', 'fornecedores', 'filiais', 'titulos',
+  'notas_fiscais', 'itens_nota', 'movimentos_estoque',
+  'v_saldo_estoque', 'v_titulos_vencidos',
+  'v_indicadores_faturamento', 'v_clientes_inadimplentes'
 ];
 
 // Colunas permitidas por tabela
@@ -78,12 +70,10 @@ export function validarSQL(sql: string): ResultadoValidacao {
   return { valido: erros.length === 0, erros };
 }
 
-// Validacao especifica para visoes
 export function validarConsultaVisao(nomeVisao: string): boolean {
   return TABELAS_PERMITIDAS.includes(nomeVisao);
 }
 
-// Obter tabela de schema para o validador
 export function getTabelasPermitidas(): string[] {
   return [...TABELAS_PERMITIDAS];
 }

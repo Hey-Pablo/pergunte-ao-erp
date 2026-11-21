@@ -1,4 +1,4 @@
--- Schema do ERP fictício para o projeto "Pergunte ao ERP"
+-- Schema do ERP ficticio para o projeto "Pergunte ao ERP"
 -- Execute em um banco PostgreSQL vazio
 
 
@@ -43,22 +43,6 @@ CREATE TABLE fornecedores (
     email VARCHAR(254),
     telefone VARCHAR(20),
     endereco TEXT,
-    ativo BOOLEAN NOT NULL DEFAULT TRUE
-);
-
--- Tabela de categorias de produtos
-CREATE TABLE categorias (
-    categoria_id SERIAL PRIMARY KEY,
-    nome VARCHAR(100) NOT NULL UNIQUE,
-    descricao TEXT
-);
-
--- Tabela de vendedores
-CREATE TABLE vendedores (
-    vendedor_id SERIAL PRIMARY KEY,
-    codigo VARCHAR(20) UNIQUE NOT NULL,
-    nome VARCHAR(150) NOT NULL,
-    comissao_percentual DECIMAL(5,2) NOT NULL DEFAULT 5.00,
     ativo BOOLEAN NOT NULL DEFAULT TRUE
 );
 
@@ -156,28 +140,16 @@ CREATE TABLE movimentos_estoque (
     usuario_id INTEGER
 );
 
--- Tabela de contas a pagar/receber (vinculada a títulos)
-CREATE TABLE contas (
-    conta_id SERIAL PRIMARY KEY,
-    titulo_id INTEGER NOT NULL REFERENCES titulos(titulo_id) ON DELETE CASCADE,
-    fornecedor_id INTEGER REFERENCES fornecedores(fornecedor_id),
-    parcela_id INTEGER REFERENCES parcelas(parcela_id),
-    data_contabilidade DATE,
-    observacao TEXT
-);
-
--- Constraints e índices
+-- Indices
 CREATE UNIQUE INDEX idx_clientes_cnpj ON clientes(cnpj);
 CREATE UNIQUE INDEX idx_produtos_codigo ON produtos(codigo);
 CREATE UNIQUE INDEX idx_notas_serie_numero ON notas_fiscais(serie, numero);
 CREATE INDEX idx_titulos_cliente ON titulos(cliente_fornecedor_id);
 CREATE INDEX idx_titulos_data_vencimento ON titulos(data_vencimento);
 CREATE INDEX idx_titulos_status ON titulos(status);
-CREATE INDEX idx_movimentos_produto_data ON movimentos_estoque(produto_id, data_movimento);
 
--- Visões para facilitar as consultas do usuário
-
--- Visão de saldo de estoque
+-- Visoes
+-- Visao de saldo de estoque
 CREATE VIEW v_saldo_estoque AS
 SELECT
     p.produto_id,
@@ -190,7 +162,7 @@ LEFT JOIN movimentos_estoque m ON p.produto_id = m.produto_id
 WHERE p.ativo = TRUE
 GROUP BY p.produto_id, p.codigo, p.descricao, p.estoque_minimo;
 
--- Visão de títulos com prazo vencido
+-- Visao de titulos com prazo vencido
 CREATE VIEW v_titulos_vencidos AS
 SELECT
     t.titulo_id,
@@ -209,7 +181,7 @@ SELECT
 FROM titulos t
 WHERE t.status IN ('ABERTO', 'PAGO') AND t.data_vencimento IS NOT NULL;
 
--- Visão de indicadores de faturamento
+-- Visao de indicadores de faturamento
 CREATE VIEW v_indicadores_faturamento AS
 SELECT
     DATE_TRUNC('month', nf.data_emissao) AS mes_ano,
@@ -222,7 +194,7 @@ FROM notas_fiscais nf
 GROUP BY DATE_TRUNC('month', nf.data_emissao)
 ORDER BY mes_ano DESC;
 
--- Visão de cliente inadimplente
+-- Visao de cliente inadimplente
 CREATE VIEW v_clientes_inadimplentes AS
 SELECT
     c.cliente_id,

@@ -6,7 +6,6 @@ import { validarSQL, validarConsultaVisao } from '../validarSql';
 export function executarRouter() {
   const router = Router();
 
-  // Pool de conexao (inicializado sob demanda)
   let pool: Pool | null = null;
 
   function getPool(): Pool {
@@ -32,7 +31,6 @@ export function executarRouter() {
         });
       }
 
-      // Validar antes de executar
       const validacao = validarSQL(sql);
       if (!validacao.valido) {
         return res.status(400).json({
@@ -68,7 +66,6 @@ export function executarRouter() {
     }
   });
 
-  // Obter esquema de uma visao especifica
   router.get('/visao/:nome', async (req: Request, res: Response) => {
     const { nome } = req.params;
 
@@ -92,7 +89,6 @@ export function executarRouter() {
     });
   });
 
-  // Listar todas as visoes disponiveis
   router.get('/visoes', (_req: Request, res: Response) => {
     res.json({
       visoes: [

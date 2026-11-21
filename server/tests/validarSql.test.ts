@@ -1,4 +1,4 @@
-import { validarSQL, validarConsultaVisao } from '../server/src/validarSql';
+import { validarSQL, validarConsultaVisao } from '../src/validarSql';
 
 describe('Validador SQL', () => {
   describe('validarSQL', () => {

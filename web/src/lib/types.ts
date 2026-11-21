@@ -1,13 +1,14 @@
-export interface Pergunta {
-  texto: string;
+export interface GerarSqlResponse {
+  pergunta: string;
+  sql: string;
+  explicacao: string;
+  confidente: boolean;
+  erro?: string;
 }
 
-export interface ResultadoConsulta {
-  sucesso: boolean;
-  dados?: any[];
-  colunas?: string[];
-  tempo_execucao_ms: number;
-  total_resultados: number;
+export interface ValidarSqlResponse {
+  valido: boolean;
+  erros: string[];
   sql?: string;
   explicacao?: string;
   pergunta?: string;
@@ -15,17 +16,57 @@ export interface ResultadoConsulta {
   timeout?: boolean;
 }
 
-export interface ColunaResultado {
+export interface VisaoSchema {
   nome: string;
-  tipo?: string;
+  colunas: string[];
 }
 
-export interface VisaoInfo {
+export interface VisaoDisponivel {
   nome: string;
   descricao: string;
   colunas: string[];
 }
 
-export interface TabelaInfo {
-  nome: string;
+export interface VisoesResponse {
+  visoes: VisaoDisponivel[];
+}
+
+export interface HealthResponse {
+  status: string;
+  servico: string;
+}
+
+export interface HistoryItem {
+  id: string;
+  pergunta: string;
+  sql: string;
+  explicacao: string;
+  timestamp: number;
+  sucesso: boolean;
+  totalResultados?: number;
+  erro?: string;
+}
+
+export interface ApiError {
+  erro: string;
+  mensagem?: string;
+  detalhes?: string[];
+}
+
+export type LoadingState = 'idle' | 'gerando-sql' | 'validando' | 'executando';
+
+export interface ColumnInfo {
+  name: string;
+  type: string;
+  isNumeric: boolean;
+}
+
+export interface ChartData {
+  labels: string[];
+  datasets: {
+    label: string;
+    data: number[];
+    backgroundColor?: string | string[];
+    borderColor?: string | string[];
+  }[];
 }

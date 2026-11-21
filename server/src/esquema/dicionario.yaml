@@ -1,6 +1,4 @@
-# Dicionário de dados para o ERP ficticio
-# Usado para gerar consultas SQL a partir de perguntas em linguagem natural
-
+# Dicionario de dados para o ERP ficticio
 versao: "1.0"
 tabela_padrao: "Todas as tabelas pertencem ao schema public"
 
@@ -18,24 +16,6 @@ tabelas:
       - nome: razao_social
         tipo: "VARCHAR(150)"
         descricao: "Nome ou razao social do cliente"
-      - nome: nome_fantasia
-        tipo: "VARCHAR(150)"
-        descricao: "Nome fantasia, quando aplicavel"
-      - nome: cnpj
-        tipo: "CHAR(14)"
-        descricao: "CNPJ do cliente no formato 12345678000191"
-      - nome: email
-        tipo: "VARCHAR(254)"
-        descricao: "Email de contato do cliente"
-      - nome: telefone
-        tipo: "VARCHAR(20)"
-        descricao: "Telefone de contato"
-      - nome: cidade
-        tipo: "VARCHAR(100)"
-        descricao: "Cidade do cliente"
-      - nome: estado
-        tipo: "CHAR(2)"
-        descricao: "UF do cliente"
       - nome: ativo
         tipo: "BOOLEAN"
         descricao: "Indica se o cliente esta ativo na operacao"
@@ -44,173 +24,66 @@ tabelas:
     descricao: "Cadastro de produtos da empresa"
     colunas:
       - nome: produto_id
-        tipo: "SERIAL"
         descricao: "Identificador unico do produto"
-        primary_key: true
       - nome: codigo
-        tipo: "VARCHAR(30)"
         descricao: "Codigo de barras ou SKU do produto"
       - nome: descricao
-        tipo: "VARCHAR(200)"
         descricao: "Descricao completa do produto"
-      - nome: ncm
-        tipo: "CHAR(8)"
-        descricao: "Codigo NCM do produto"
-      - nome: categoria
-        tipo: "VARCHAR(100)"
-        descricao: "Categoria do produto (Eletronicos, Matematica, etc.)"
       - nome: preco_venda
-        tipo: "DECIMAL(12,2)"
         descricao: "Preco de venda do produto"
       - nome: estoque_minimo
-        tipo: "DECIMAL(10,2)"
         descricao: "Estoque minimo recomendado"
       - nome: ativo
-        tipo: "BOOLEAN"
         descricao: "Indica se o produto esta ativo"
-
-  fornecedores:
-    descricao: "Cadastro de fornecedores da empresa"
-    colunas:
-      - nome: fornecedor_id
-        tipo: "SERIAL"
-        descricao: "Identificador unico do fornecedor"
-        primary_key: true
-      - nome: codigo
-        tipo: "VARCHAR(20)"
-        descricao: "Codigo interno do fornecedor"
-      - nome: razao_social
-        tipo: "VARCHAR(150)"
-        descricao: "Nome ou razao social do fornecedor"
-      - nome: cnpj
-        tipo: "CHAR(14)"
-        descricao: "CNPJ do fornecedor"
-
-  filiais:
-    descricao: "Filiais da empresa rede"
-    colunas:
-      - nome: filial_id
-        tipo: "SERIAL"
-        descricao: "Identificador unico da filial"
-        primary_key: true
-      - nome: codigo
-        tipo: "VARCHAR(10)"
-        descricao: "Codigo da filial"
-      - nome: nome
-        tipo: "VARCHAR(100)"
-        descricao: "Nome da filial"
-      - nome: cidade
-        tipo: "VARCHAR(100)"
-        descricao: "Cidade onde a filial esta localizada"
-      - nome: estado
-        tipo: "CHAR(2)"
-        descricao: "UF da filial"
-      - nome: ativa
-        tipo: "BOOLEAN"
-        descricao: "Indica se a filial esta ativa"
 
   titulos:
     descricao: "Contas a pagar e receber"
     colunas:
       - nome: titulo_id
-        tipo: "SERIAL"
         descricao: "Identificador unico do titulo"
-        primary_key: true
-      - nome: codigo
-        tipo: "VARCHAR(30)"
-        descricao: "Codigo do titulo"
       - nome: tipo
-        tipo: "VARCHAR(10)"
         descricao: "Tipo do titulo: PAGAR ou RECEBER"
-      - nome: historico
-        tipo: "VARCHAR(200)"
-        descricao: "Historico/desricao do titulo"
-      - nome: data_emissao
-        tipo: "DATE"
-        descricao: "Data de emissao do titulo"
       - nome: data_vencimento
-        tipo: "DATE"
         descricao: "Data de vencimento do titulo"
       - nome: valor
-        tipo: "DECIMAL(14,2)"
         descricao: "Valor total do titulo"
-      - nome: cliente_fornecedor_id
-        tipo: "INTEGER"
-        descricao: "FK para clientes ou fornecedores"
       - nome: status
-        tipo: "VARCHAR(20)"
         descricao: "Status: ABERTO, PAGO, CANCELADO, VENCIDO"
 
   notas_fiscais:
     descricao: "Notas fiscais emitidas ou recebidas"
     colunas:
       - nome: nota_id
-        tipo: "SERIAL"
         descricao: "Identificador unico da nota"
-        primary_key: true
       - nome: numero
-        tipo: "INTEGER"
         descricao: "Numero da nota"
-      - nome: serie
-        tipo: "VARCHAR(5)"
-        descricao: "Serie da nota"
       - nome: data_emissao
-        tipo: "DATE"
         descricao: "Data de emissao da nota"
       - nome: valor_total
-        tipo: "DECIMAL(14,2)"
         descricao: "Valor total da nota"
-      - nome: cliente_id
-        tipo: "INTEGER"
-        descricao: "FK para clientes"
-      - nome: filial_id
-        tipo: "INTEGER"
-        descricao: "FK para filiais"
       - nome: status
-        tipo: "VARCHAR(20)"
         descricao: "Status: EMITIDA, CANCELADA, INUTILIZADA"
 
   itens_nota:
     descricao: "Itens de cada nota fiscal"
     colunas:
       - nome: item_id
-        tipo: "SERIAL"
         descricao: "Identificador unico do item"
-        primary_key: true
-      - nome: nota_id
-        tipo: "INTEGER"
-        descricao: "FK para notas_fiscais"
-      - nome: produto_id
-        tipo: "INTEGER"
-        descricao: "FK para produtos"
       - nome: quantidade
-        tipo: "DECIMAL(12,3)"
         descricao: "Quantidade do produto na nota"
       - nome: valor_unitario
-        tipo: "DECIMAL(12,2)"
         descricao: "Valor unitario do produto"
 
   movimentos_estoque:
     descricao: "Movimentos de entrada e saida de estoque"
     colunas:
       - nome: movimento_id
-        tipo: "SERIAL"
         descricao: "Identificador unico do movimento"
-        primary_key: true
-      - nome: produto_id
-        tipo: "INTEGER"
-        descricao: "FK para produtos"
       - nome: tipo
-        tipo: "VARCHAR(10)"
         descricao: "Tipo: ENTRADA ou SAIDA"
       - nome: quantidade
-        tipo: "DECIMAL(12,3)"
-        descricao: "Quantidade movimentada (positivo para entrada, negativo para saida)"
-      - nome: preco_custo
-        tipo: "DECIMAL(12,2)"
-        descricao: "Preco de custo do produto no momento da movimentacao"
+        descricao: "Quantidade movimentada"
       - nome: data_movimento
-        tipo: "TIMESTAMP WITH TIME ZONE"
         descricao: "Data e hora do movimento"
 
 visoes:
@@ -218,106 +91,47 @@ visoes:
     descricao: "Saldo atual de todos os produtos ativos"
     colunas:
       - nome: produto_id
-        descricao: "Identificador do produto"
       - nome: codigo
-        descricao: "Codigo do produto"
       - nome: descricao
-        descricao: "Descricao do produto"
       - nome: saldo_atual
-        descricao: "Saldo atual em unidades"
       - nome: estoque_minimo
-        descricao: "Estoque minimo recomendado"
 
   v_titulos_vencidos:
     descricao: "Titulos com datas de vencimento"
     colunas:
       - nome: titulo_id
-        descricao: "Identificador do titulo"
       - nome: codigo
-        descricao: "Codigo do titulo"
       - nome: tipo
-        descricao: "Tipo: PAGAR ou RECEBER"
       - nome: data_vencimento
-        descricao: "Data de vencimento"
       - nome: valor
-        descricao: "Valor do titulo"
       - nome: status
-        descricao: "Status atual"
       - nome: dias_em_vencimento
-        descricao: "Dias em atraso"
       - nome: classificacao_vencimento
-        descricao: "Classificacao: VENCIDO, A VENCER ou status atual"
 
   v_indicadores_faturamento:
     descricao: "Indicadores de faturamento mensal"
     colunas:
       - nome: mes_ano
-        descricao: "Mes e ano referente"
       - nome: quantidade_notas
-        descricao: "Numero de notas fiscais emitidas"
       - nome: faturamento_bruto
-        descricao: "Valor total das notas"
       - nome: icms
-      descricao: "Valor do ICMS"
       - nome: ipi
-        descricao: "Valor do IPI"
       - nome: clientes_distintos
-        descricao: "Numero de clientes distintos"
 
   v_clientes_inadimplentes:
     descricao: "Clientes com titulos em aberto"
     colunas:
       - nome: cliente_id
-        descricao: "Identificador do cliente"
       - nome: codigo
-        descricao: "Codigo do cliente"
       - nome: razao_social
-        descricao: "Nome do cliente"
       - nome: cnpj
-        descricao: "CNPJ do cliente"
-      - nome: total_titulos
-        descricao: "Total de titulos"
       - nome: titulos_em_aberto
-        descricao: "Numero de titulos em aberto"
       - nome: valor_em_aberto
-        descricao: "Valor total em aberto"
-      - nome: ultimo_vencimento
-        descricao: "Data do ultimo vencimento"
 
 termos_business:
   - termo: "cliente inadimplente"
-    descricao: "Cliente com titulos em aberto com vencimento ultrapassado"
+    descricao: "Cliente com titulos em aberto com vencimento passado"
     sql: "SELECT * FROM v_clientes_inadimplentes"
   - termo: "saldo de estoque"
     descricao: "Quantidade disponivel de um ou mais produtos"
     sql: "SELECT * FROM v_saldo_estoque"
-  - termo: "titulos vencidos"
-    descricao: "Contas a pagar ou receber com data de vencimento passada"
-    sql: "SELECT * FROM v_titulos_vencidos WHERE classificacao_vencimento = 'VENCIDO'"
-  - termo: "faturamento"
-    descricao: "Valor total das notas fiscais emitidas"
-    sql: "SELECT * FROM v_indicadores_faturamento"
-  - termo: "produto sem estoque"
-    descricao: "Produtos com saldo igual ou abaixo do estoque minimo"
-    sql: "SELECT * FROM v_saldo_estoque WHERE saldo_atual <= estoque_minimo"
-  - termo: "cliente ativo"
-    descricao: "Clientes com flag ativo = TRUE"
-    sql: "SELECT * FROM clientes WHERE ativo = TRUE"
-  - termo: "nota fiscal"
-    descricao: "Documento fiscal emitido por uma nota"
-    sql: "SELECT * FROM notas_fiscais WHERE status = 'EMITIDA'"
-  - termo: "vendido"
-    descricao: "Produto vendido em uma nota fiscal"
-    sql: "SELECT p.descricao, SUM(i.quantidade) as qtd_vendida FROM itens_nota i JOIN produtos p ON i.produto_id = p.produto_id GROUP BY p.produto_id, p.descricao"
-
-padro_pergunta:
-  - padro: "Quais [entidade] [condicao]"
-    exemplo: "Quais clientes ativos?"
-  - padro: "Total de [entidade] [periodo]"
-    exemplo: "Total de notas fiscais do mes?"
-  - padro: "[entidade] com [condicao]"
-    exemplo: "Produtos com estoque baixo"
-  - padro: "Saldo de [entidade]"
-    exemplo: "Saldo de estoque do produto X"
-  - padro: "Historico de [entidade]"
-    exemplo: "Historico de movimentos do produto Y"

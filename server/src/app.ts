@@ -11,7 +11,7 @@ import { criarServidor } from './server';
 
 const app = express();
 
-// Middlewares de segurança
+// Middlewares de seguranca
 app.use(helmet());
 app.use(cors({
   origin: process.env.FRONTEND_URL || 'http://localhost:5173',

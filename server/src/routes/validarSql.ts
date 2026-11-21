@@ -31,7 +31,6 @@ export function validarSqlRouter() {
     }
   });
 
-  // Endpoint para obter esquema de tabelas permitidas
   router.get('/tabelas', (_req: Request, res: Response) => {
     const tabelas = [
       'clientes', 'produtos', 'fornecedores', 'filiais', 'titulos',
