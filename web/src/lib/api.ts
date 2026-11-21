@@ -2,8 +2,8 @@ import type {
   GerarSqlResponse,
   ValidarSqlResponse,
   ExecutarResponse,
-  VisoesResponse,
   VisaoSchema,
+  VisoesResponse,
   HealthResponse,
 } from './types';
 

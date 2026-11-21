@@ -1,5 +1,4 @@
 import { useMemo, useState } from 'react';
-import type { ColumnInfo, ChartData } from '../lib/types';
 import { detectColumnTypes, prepareChartData, formatNumber, formatCurrency, formatDate, formatSQL } from '../lib/utils';
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Cell } from 'recharts';
 
@@ -118,7 +117,7 @@ interface ChartCardProps {
   title?: string;
 }
 
-export function ChartCard({ data, columns, title }: ChartCardProps) {
+export function ChartCard({ data, columns }: ChartCardProps) {
   const columnTypes = useMemo(() => detectColumnTypes(data, columns), [data, columns]);
   const chartData = useMemo(() => prepareChartData(data, columns, columnTypes), [data, columns, columnTypes]);
 

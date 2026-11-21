@@ -67,7 +67,7 @@ export function detectColumnTypes(data: any[], columns: string[]): ColumnInfo[] 
   });
 }
 
-export function prepareChartData(data: any[], columns: string[], columnTypes: ColumnInfo[]): ChartData | null {
+export function prepareChartData(data: any[], _columns: string[], columnTypes: ColumnInfo[]): ChartData | null {
   if (data.length === 0) return null;
 
   // Find first text column for labels and first numeric column for values
@@ -116,8 +116,8 @@ export function formatCurrency(value: number): string {
   }).format(value);
 }
 
-export function formatDate(value: string | Date): string {
-  const date = typeof value === 'string' ? new Date(value) : value;
+export function formatDate(value: string | Date | number): string {
+  const date = typeof value === 'number' ? new Date(value) : typeof value === 'string' ? new Date(value) : value;
   return date.toLocaleDateString('pt-BR');
 }
 

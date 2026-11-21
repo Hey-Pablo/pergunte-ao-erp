@@ -1,7 +1,9 @@
-import { useState } from 'react';
-import PerguntaForm from './components/PerguntaForm';
-import Resultado from './components/Resultado';
-import { Pergunta, ResultadoConsulta } from './lib/types';
+import { useState, useEffect, useCallback } from 'react';
+import { QuestionForm } from './components/QuestionForm';
+import { ResultCard, DataTable, ChartCard, SQLPanel, ExplanationPanel, ErrorPanel, ClarificationDialog } from './components/ResultCard';
+import { History } from './components/History';
+import { gerarSql, executarSql, checkHealth } from './lib/api';
+import { HistoryItem, LoadingState } from './lib/types';
 
 function App() {
   const [loadingState, setLoadingState] = useState<LoadingState>('idle');
@@ -37,33 +39,17 @@ function App() {
     check();
   }, []);
 
-  const handleSubmit = useCallback(async (pergunta: string) => {
-    setLoadingState('gerando-sql');
-    setCurrentResult(null);
-    setClarification(null);
-
-    try {
-      const resposta = await fetch('/api/gerar-sql', {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ pergunta: pergunta.texto })
-      });
-      const dados = await resposta.json();
-      if (!resposta.ok || dados.sucesso === false) throw new Error(dados.erro || 'Falha ao consultar');
-      if (!dados.confidente) {
-        setErro(dados.explicacao);
-        return;
-      }
-      setResultado({ ...dados, pergunta: pergunta.texto });
-
-    } finally {
-      setLoadingState('idle');
-    }
+  const addToHistory = useCallback((item: HistoryItem) => {
+    setHistory(prev => {
+      const newHistory = [item, ...prev];
+      return newHistory.slice(0, 50);
+    });
   }, []);
 
   const handleClarificationConfirm = useCallback((novaPergunta: string) => {
     setClarification(null);
     handleSubmit(novaPergunta);
-  }, [handleSubmit]);
+  }, []);
 
   const handleClarificationCancel = useCallback(() => {
     setClarification(null);
@@ -71,14 +57,112 @@ function App() {
 
   const handleReuse = useCallback((item: HistoryItem) => {
     handleSubmit(item.pergunta);
-  }, [handleSubmit]);
+  }, []);
 
   const handleClearHistory = useCallback(() => {
     setHistory([]);
   }, []);
 
+  const handleSubmit = useCallback(async (pergunta: string) => {
+    setLoadingState('gerando-sql');
+    setCurrentResult(null);
+    setClarification(null);
+
+    try {
+      const resposta = await gerarSql(pergunta);
+
+      if (!resposta.confidente && resposta.explicacao) {
+        setClarification({
+          perguntaOriginal: resposta.pergunta || pergunta,
+          perguntaEsclarecimento: resposta.explicacao
+        });
+        setLoadingState('idle');
+        return;
+      }
+
+      if (resposta.erro) {
+        setCurrentResult({
+          sql: resposta.sql || '',
+          explicacao: resposta.explicacao || '',
+          data: [],
+          columns: [],
+          totalResultados: 0,
+          erro: resposta.erro
+        });
+        setLoadingState('idle');
+        return;
+      }
+
+      if (!resposta.sql || !resposta.sql.trim()) {
+        throw new Error(resposta.explicacao || 'Não foi possível gerar SQL');
+      }
+
+      // Execute the SQL
+      setLoadingState('executando');
+      const execResult = await executarSql(resposta.sql);
+
+      if (execResult.erro) {
+        setCurrentResult({
+          sql: resposta.sql,
+          explicacao: resposta.explicacao || '',
+          data: [],
+          columns: [],
+          totalResultados: 0,
+          erro: execResult.erro,
+          detalhes: execResult.detalhes
+        });
+        addToHistory({
+          id: Date.now().toString(),
+          pergunta,
+          sql: resposta.sql,
+          explicacao: resposta.explicacao || '',
+          timestamp: Date.now(),
+          sucesso: false,
+          erro: execResult.erro
+        });
+        setLoadingState('idle');
+        return;
+      }
+
+      const result = {
+        sql: resposta.sql,
+        explicacao: resposta.explicacao || '',
+        data: execResult.dados || [],
+        columns: execResult.colunas || [],
+        tabelaPrincipal: resposta.tabelaPrincipal,
+        tipoConsulta: resposta.tipoConsulta,
+        totalResultados: execResult.total_resultados || 0
+      };
+
+      setCurrentResult(result);
+      setLoadingState('idle');
+
+      // Add to history
+      addToHistory({
+        id: Date.now().toString(),
+        pergunta,
+        sql: resposta.sql,
+        explicacao: resposta.explicacao || '',
+        timestamp: Date.now(),
+        sucesso: true,
+        totalResultados: result.totalResultados
+      });
+
+    } catch (e: any) {
+      setCurrentResult({
+        sql: '',
+        explicacao: '',
+        data: [],
+        columns: [],
+        totalResultados: 0,
+        erro: e.message || 'Erro desconhecido'
+      });
+      setLoadingState('idle');
+    }
+  }, [addToHistory]);
+
   const handleRetry = useCallback(() => {
-    if (currentResult?.erro) {
+    if (currentResult?.erro && history.length > 0) {
       const lastFailed = history.find(h => !h.sucesso && h.erro === currentResult.erro);
       if (lastFailed) {
         handleSubmit(lastFailed.pergunta);
@@ -139,72 +223,52 @@ function App() {
           </div>
         </section>
 
-        {/* Clarification Dialog */}
-        {clarification && (
+        {/* History */}
+        {showHistory && (
           <section className="section">
-            <div className="section-content">
-              <div style={{ maxWidth: '500px', margin: '0 auto' }}>
-                <div className="clarification-dialog" role="dialog" aria-modal="true" aria-labelledby="clarification-title">
-                  <div className="clarification-content">
-                    <svg className="clarification-icon" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                      <circle cx="12" cy="12" r="10"></circle>
-                      <line x1="12" y1="8" x2="12" y2="12"></line>
-                      <line x1="12" y1="16" x2="12.01" y2="16"></line>
-                    </svg>
-                    <h3 id="clarification-title">Preciso de mais informações</h3>
-                    <p style={{ marginTop: '8px', color: 'var(--color-text-secondary)' }}>
-                      Sua pergunta <strong>"{clarification.perguntaOriginal}"</strong> está ambígua.
-                    </p>
-                    <p style={{ marginTop: '8px', color: 'var(--color-text-secondary)' }}>
-                      {clarification.perguntaEsclarecimento}
-                    </p>
-
-                    <form
-                      onSubmit={(e) => {
-                        e.preventDefault();
-                        const formData = new FormData(e.currentTarget);
-                        const resposta = formData.get('esclarecimento') as string;
-                        if (resposta.trim()) {
-                          handleClarificationConfirm(`${clarification.perguntaOriginal}. ${resposta.trim()}`);
-                        }
-                      }}
-                      style={{ marginTop: '16px' }}
-                    >
-                      <input
-                        type="text"
-                        name="esclarecimento"
-                        placeholder="Ex: novembro de 2026"
-                        className="clarification-input"
-                        autoFocus
-                        aria-label="Esclarecimento adicional"
-                        required
-                      />
-                      <div style={{ display: 'flex', gap: '8px', marginTop: '12px', justifyContent: 'flex-end' }}>
-                        <button type="button" className="btn btn-secondary" onClick={handleClarificationCancel}>
-                          Cancelar
-                        </button>
-                        <button type="submit" className="btn btn-primary">
-                          Confirmar
-                        </button>
-                      </div>
-                    </form>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <History
+              items={history}
+              onReuse={handleReuse}
+              onClear={handleClearHistory}
+            />
           </section>
         )}
 
-        {resultado && (
-          <Resultado
-            pergunta={resultado.pergunta || ''}
-            sql={resultado.sql || ''}
-            explicacao={resultado.explicacao || ''}
-            dados={resultado.dados || []}
-            colunas={resultado.colunas || []}
-            tempoExecucao={resultado.tempo_execucao_ms}
-            totalResultados={resultado.total_resultados}
+        {/* Clarification Dialog */}
+        {clarification && (
+          <ClarificationDialog
+            pergunta={clarification.perguntaOriginal}
+            onConfirm={handleClarificationConfirm}
+            onCancel={handleClarificationCancel}
           />
+        )}
+
+        {/* Results */}
+        {hasResults && currentResult && (
+          <div className="results-grid">
+            <ResultCard title="Resultado" badge="success">
+              <ExplanationPanel
+                explicacao={currentResult.explicacao}
+                tabelaPrincipal={currentResult.tabelaPrincipal}
+                tipoConsulta={currentResult.tipoConsulta}
+              />
+              <SQLPanel sql={currentResult.sql} />
+              <DataTable data={currentResult.data} columns={currentResult.columns} />
+              <ChartCard data={currentResult.data} columns={currentResult.columns} />
+            </ResultCard>
+          </div>
+        )}
+
+        {/* Error */}
+        {hasError && currentResult && (
+          <ResultCard title="Erro">
+            <ErrorPanel
+              erro={currentResult.erro || 'Erro desconhecido'}
+              detalhes={currentResult.detalhes}
+              onRetry={handleRetry}
+              onBack={handleBack}
+            />
+          </ResultCard>
         )}
       </main>
 

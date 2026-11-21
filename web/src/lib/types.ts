@@ -4,6 +4,18 @@ export interface GerarSqlResponse {
   explicacao: string;
   confidente: boolean;
   erro?: string;
+  tabelaPrincipal?: string;
+  tipoConsulta?: string;
+}
+
+export interface ExecutarResponse {
+  dados?: any[];
+  colunas?: string[];
+  total_resultados?: number;
+  tempo_execucao_ms?: number;
+  erro?: string;
+  detalhes?: string[];
+  timeout?: boolean;
 }
 
 export interface ValidarSqlResponse {

@@ -36,13 +36,13 @@ describe('App', () => {
     expect(screen.getByRole('button', { name: /perguntar/i })).toBeInTheDocument();
   });
 
-  it('displays example questions', async () => {
+  it('displays question form', async () => {
     render(<App />);
     await waitFor(() => {
-      expect(screen.getByText('Exemplos de perguntas')).toBeInTheDocument();
+      expect(screen.getByText('Faça sua pergunta')).toBeInTheDocument();
     });
-    expect(screen.getByText(/Quais os 5 clientes com mais títulos vencidos?/)).toBeInTheDocument();
-    expect(screen.getByText(/Saldo de estoque de todos os produtos/)).toBeInTheDocument();
+    expect(screen.getByRole('textbox')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /perguntar/i })).toBeInTheDocument();
   });
 
   it('submits a question and shows result', async () => {
@@ -52,6 +52,7 @@ describe('App', () => {
       sql: 'SELECT * FROM clientes LIMIT 10',
       explicacao: 'Lista clientes',
       confidente: true,
+      pergunta: 'Quais clientes ativos?',
     });
 
     vi.mocked(executarSql).mockResolvedValue({
