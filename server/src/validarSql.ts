@@ -20,7 +20,7 @@ const colunasPermitidas: Record<string, string[]> = {
   v_titulos_vencidos: ['titulo_id', 'codigo', 'tipo', 'historico', 'data_vencimento', 'valor', 'status', 'dias_em_vencimento', 'classificacao_vencimento'],
   v_indicadores_faturamento: ['mes_ano', 'quantidade_notas', 'faturamento_bruto', 'icms', 'ipi', 'clientes_distintos'],
   v_clientes_inadimplentes: ['cliente_id', 'codigo', 'razao_social', 'cnpj', 'total_titulos', 'titulos_em_aberto', 'valor_em_aberto', 'ultimo_vencimento']
-];
+};
 
 export interface ResultadoValidacao {
   valido: boolean;
