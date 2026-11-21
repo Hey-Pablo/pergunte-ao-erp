@@ -58,6 +58,23 @@ pergunte-ao-erp/
 └─ README.md
 ```
 
+## Configurar sua chave
+
+Cada usuário usa sua própria chave de um provedor compatível com a API OpenAI. Para FreeLLMAPI, consulte as instruções do provedor que você executar e obtenha sua própria chave. Copie `.env.example` para `.env`, configure `BASE_URL`, `API_KEY` e `MODEL` e mantenha `.env` fora do Git. O endereço padrão aponta para uma instalação local em `http://localhost:3001/v1`; é necessário iniciar e configurar esse serviço separadamente. Nenhuma chave real é necessária nos testes.
+
+## Avaliação
+
+O arquivo `avaliacao/perguntas.csv` contém 40 perguntas e consultas de referência para o banco fictício. Com o banco local inicializado, o papel `reader_user` configurado e o provedor disponível, execute a partir de `server/`:
+
+```bash
+set -a; source ../.env; set +a
+npx tsx ../avaliacao/rodar.ts
+```
+
+O relatório JSON em `avaliacao/relatorios/` registra data, modelo, taxa de acerto e erros de geração, execução, gabarito ou resultado. A comparação ignora a ordem das linhas e nomes das colunas, mas preserva duplicatas e ordem dos valores de cada linha. A taxa só aparece após uma execução real; a meta é 80%. Os dados e relatórios devem ser fictícios e revisados antes de publicar. No PC, rode também PostgreSQL e provedor reais para validar permissões, timeout, conexão e execução completa; os testes automatizados usam PGlite e mocks.
+
+O servidor limita requisições POST a 30 por IP por minuto, em memória por processo. Esse limite reinicia com o servidor e não é compartilhado entre instâncias; produção exige limite compartilhado e autenticação. Cada execução de SQL registra data, duração, resultado e hash SHA-256 do SQL no console, sem registrar o texto nem os resultados. O operador deve definir retenção e proteger os logs; hash não impede adivinhação de consultas conhecidas.
+
 ## Segurança
 
 ### Ameaças e Defesas
@@ -68,7 +85,10 @@ pergunte-ao-erp/
 | Exposicao de dados sensiveis | Usuario de leitura somente, sem CREATE/DROP |
 | Consultas lentas | Timeout de 30 segundos por consulta |
 | Excesso de resultados | Limite maximo de 10.000 registros |
-| SQL injection | Validacao de tabelas e colunas permitidas |
+| SQL gerado malicioso | Validador SQL e papel de leitura; revise permissões do banco antes de expor a API |
+| Abuso da API | Limite local por IP; autenticação e limite compartilhado são necessários em produção |
+| Vazamento por logs | SQL e resultados não são registrados em texto; logs requerem proteção e retenção |
+| Pergunta maliciosa ao modelo | Saída é validada antes da execução; o modelo não é uma fronteira de segurança |
 
 ### Permissoes do Usuario de Leitura
 

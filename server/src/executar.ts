@@ -1,4 +1,5 @@
 import { Pool } from 'pg';
+import { criarRegistro } from './registro';
 import { validarSQL, validarConsultaVisao } from './validarSql';
 
 export interface ResultadoExecucao {
@@ -15,7 +16,7 @@ export interface ResultadoExecucao {
 export async function executarSQL(pool: Pool, sql: string): Promise<ResultadoExecucao> {
   const inicio = Date.now();
   const vazio = () => ({ tempo_execucao_ms: Date.now() - inicio, total_resultados: 0 });
-  if (!validarSQL(sql).valido) return { sucesso: false, erro: 'Consulta recusada pelo validador.', ...vazio() };
+  if (!validarSQL(sql).valido) { console.info(JSON.stringify(criarRegistro(sql, false, Date.now() - inicio))); return { sucesso: false, erro: 'Consulta recusada pelo validador.', ...vazio() }; }
   let cliente;
   try {
     cliente = await pool.connect();
@@ -25,9 +26,11 @@ export async function executarSQL(pool: Pool, sql: string): Promise<ResultadoExe
     await cliente.query("SET LOCAL statement_timeout = '30s'");
     const resultado = await cliente.query(sql);
     await cliente.query('COMMIT');
+    console.info(JSON.stringify(criarRegistro(sql, true, Date.now() - inicio)));
     return { sucesso: true, dados: resultado.rows, colunas: resultado.fields.map(f => f.name), total_resultados: resultado.rows.length, tempo_execucao_ms: Date.now() - inicio };
   } catch (e: any) {
     if (cliente) await cliente.query('ROLLBACK').catch(() => {});
+    console.info(JSON.stringify(criarRegistro(sql, false, Date.now() - inicio)));
     return { sucesso: false, erro: String(e.message || 'Erro ao executar consulta'), erroBanco: true, timeout: e.code === '57014', ...vazio() };
   } finally { cliente?.release(); }
 }
