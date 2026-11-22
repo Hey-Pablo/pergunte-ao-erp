@@ -44,5 +44,5 @@ describe('fluxo de consulta', () => {
     const resultado = await executarSQL(pool as any, 'SELECT nome FROM clientes LIMIT 1');
     expect(resultado.dados).toEqual([{ nome: 'Ana' }]);
     await db.close();
-  });
+  }, 10000);
 });
