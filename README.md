@@ -282,7 +282,7 @@ Por seguranca, consultas sao limitadas a 10.000 registros por padrao. O limite p
 ## Historico de Alteracoes
 
 - 2026-11-21: Estrutura inicial com docker-compose, schema SQL, API REST e frontend React
-- 2026-11-22: Corrigido seed file para usar apenas tabelas whitelisted; aumentado timeout do teste PGlite de 5000ms para 10000ms; PR #7 para review de Abel
+- 2026-11-22: Corrigido seed file para usar apenas tabelas whitelisted; corrigidos paths de testes para usar process.cwd(); adicionados imports faltantes de vitest; corrigido caminho do dicionario.yaml em gerarSql.ts; timeout PGlite de 5000ms para 10000ms; PR #7 para review de Abel
 
 ## Autor
 

@@ -1,3 +1,4 @@
+import { describe, it, expect, vi } from 'vitest';
 import { PGlite } from '@electric-sql/pglite';
 import { gerarSQL, consultar } from '../src/gerarSql';
 import { executarSQL } from '../src/executar';

@@ -87,7 +87,7 @@ describe('Dicionário de Dados - Cobertura', () => {
   });
 
   it('todas as colunas das tabelas do dicionário existem no banco', async () => {
-    const dicionarioPath = path.join(process.cwd(), '..', 'server', 'src', 'esquema', 'dicionario.yaml');
+    const dicionarioPath = path.join(process.cwd(), 'server/src/esquema/dicionario.yaml');
     const dicionario = fs.readFileSync(dicionarioPath, 'utf-8');
 
     // Parse simples do YAML para extrair tabelas e colunas
@@ -127,7 +127,7 @@ describe('Dicionário de Dados - Cobertura', () => {
 
   it('todas as colunas das visões do dicionário existem no banco', async () => {
     // Verificar colunas das visões pelo SELECT * e comparar com dicionário
-    const dicionarioPath = path.join(process.cwd(), '..', 'server', 'src', 'esquema', 'dicionario.yaml');
+    const dicionarioPath = path.join(process.cwd(), 'server/src/esquema/dicionario.yaml');
     const dicionario = fs.readFileSync(dicionarioPath, 'utf-8');
 
     const visoesMatch = dicionario.match(/visoes:\n([\s\S]*?)(?=\ntermos_business:|\npadro_pergunta:|$)/);
