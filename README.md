@@ -1,6 +1,7 @@
 # Pergunte ao ERP
 
 > **Demonstração:** em breve
+> **Status:** PR #7 aberta para review do Abel
 
 ## O que é
 
