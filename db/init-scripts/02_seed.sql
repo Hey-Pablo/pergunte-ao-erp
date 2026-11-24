@@ -1,22 +1,6 @@
 -- Dados fictícios para demonstração
 -- Execute após o script de schema
 
--- Inserir categorias
-INSERT INTO categorias (nome, descricao) VALUES
-('Eletronicos', 'Produtos eletronicos e informatica'),
-('Matematica', 'Material escolar e escritorio'),
-('Informatica', 'Hardware, perifericos e software'),
-('Vestuario', 'Roupa e calcalgos'),
-('Livros', 'Livros didaticos e literatura');
-
--- Inserir unidades de medida
-INSERT INTO unidades_medida (sigla, descricao) VALUES
-('UN', 'Unidade'),
-('KG', 'Quilograma'),
-('LT', 'Litro'),
-('CX', 'Caixa'),
-('PX', 'Pacote');
-
 -- Inserir filiais
 INSERT INTO filiais (codigo, nome, cidade, estado) VALUES
 ('001', 'Sede - São Paulo', 'São Paulo', 'SP'),
@@ -24,13 +8,6 @@ INSERT INTO filiais (codigo, nome, cidade, estado) VALUES
 ('003', 'Filial - Belo Horizonte', 'Belo Horizonte', 'MG'),
 ('004', 'Filial - Porto Alegre', 'Porto Alegre', 'RS'),
 ('005', 'Filial - Curitiba', 'Curitiba', 'PR');
-
--- Inserir vendedores
-INSERT INTO vendedores (codigo, nome, comissao_percentual) VALUES
-('V001', 'Carlos Silva', 5.00),
-('V002', 'Maria Santos', 4.50),
-('V003', 'Jose Pereira', 5.50),
-('V004', 'Ana Costa', 6.00);
 
 -- Inserir clientes ficticios
 INSERT INTO clientes (codigo, razao_social, cnpj, email, cidade, estado, ativo) VALUES
@@ -70,26 +47,18 @@ INSERT INTO produtos (codigo, descricao, ncm, categoria, preco_venda, estoque_mi
 ('PROD019', 'Webcam Logitech C920', '85176200', 'Informatica', 280.00, 3),
 ('PROD020', 'Fone de Ouvido Bluetooth JBL', '85183000', 'Informatica', 220.00, 5);
 
--- Inserir condicoes de pagamento
-INSERT INTO condicoes_pagamento (nome, praze_dias, juros_percentual, desconto_percentual) VALUES
-('Pagamento à Vista', 0, 0, 5.00),
-('À 30 Dias', 30, 0, 0),
-('À 60 Dias', 60, 1.00, 0),
-('À 90 Dias', 90, 2.00, 0),
-('Parcelado 12x', 365, 0, 0);
-
--- Inserir notas fiscais e itens
+-- Inserir notas fiscais
 INSERT INTO notas_fiscais (numero, serie, data_emissao, data_entrada, valor_total, valor_icms, cliente_id, filial_id, chave_acesso, status) VALUES
-(1001, 'N', '2026-10-01', '2026-10-01', 4500.00, 378.00, 1, 1, '11000100123456789012345678901234567890123456', 'EMITIDA'),
-(1002, 'N', '2026-10-05', '2026-10-05', 850.00, 70.85, 2, 2, '11000200123456789012345678901234567890123457', 'EMITIDA'),
-(1003, 'N', '2026-10-10', '2026-10-10', 5330.00, 444.05, 3, 3, '11000300123456789012345678901234567890123458', 'EMITIDA'),
-(1004, 'N', '2026-10-15', '2026-10-15', 1200.00, 100.00, 4, 4, '11000400123456789012345678901234567890123459', 'EMITIDA'),
-(1005, 'N', '2026-10-20', '2026-10-20', 5850.00, 486.75, 5, 5, '11000500123456789012345678901234567890123460', 'EMITIDA'),
-(1006, 'N', '2026-10-25', '2026-10-25', 220.00, 18.36, 6, 1, '11000100123456789012345678901234567890123461', 'EMITIDA'),
-(1007, 'N', '2026-10-28', '2026-10-28', 130.00, 10.85, 7, 2, '11000200123456789012345678901234567890123462', 'EMITIDA'),
-(1008, 'N', '2026-10-30', '2026-10-30', 1030.00, 85.75, 8, 3, '11000300123456789012345678901234567890123463', 'EMITIDA'),
-(1009, 'N', '2026-11-02', '2026-11-02', 95.00, 7.91, 9, 4, '11000400123456789012345678901234567890123464', 'EMITIDA'),
-(1010, 'N', '2026-11-05', '2026-11-05', 4580.00, 382.20, 10, 5, '11000500123456789012345678901234567890123465', 'EMITIDA');
+(1, 'N', '2026-10-01', '2026-10-01', 4500.00, 378.00, 1, 1, '11000100123456789012345678901234567890123456', 'EMITIDA'),
+(2, 'N', '2026-10-05', '2026-10-05', 850.00, 70.85, 2, 2, '11000200123456789012345678901234567890123457', 'EMITIDA'),
+(3, 'N', '2026-10-10', '2026-10-10', 5330.00, 444.05, 3, 3, '11000300123456789012345678901234567890123458', 'EMITIDA'),
+(4, 'N', '2026-10-15', '2026-10-15', 1200.00, 100.00, 4, 4, '11000400123456789012345678901234567890123459', 'EMITIDA'),
+(5, 'N', '2026-10-20', '2026-10-20', 5850.00, 486.75, 5, 5, '11000500123456789012345678901234567890123460', 'EMITIDA'),
+(6, 'N', '2026-10-25', '2026-10-25', 220.00, 18.36, 6, 1, '11000100123456789012345678901234567890123461', 'EMITIDA'),
+(7, 'N', '2026-10-28', '2026-10-28', 130.00, 10.85, 7, 2, '11000200123456789012345678901234567890123462', 'EMITIDA'),
+(8, 'N', '2026-10-30', '2026-10-30', 1030.00, 85.75, 8, 3, '11000300123456789012345678901234567890123463', 'EMITIDA'),
+(9, 'N', '2026-11-02', '2026-11-02', 95.00, 7.91, 9, 4, '11000400123456789012345678901234567890123464', 'EMITIDA'),
+(10, 'N', '2026-11-05', '2026-11-05', 4580.00, 382.20, 10, 5, '11000500123456789012345678901234567890123465', 'EMITIDA');
 
 -- Inserir itens das notas
 INSERT INTO itens_nota (nota_id, produto_id, quantidade, valor_unitario, quantidade_embalagem) VALUES
@@ -120,10 +89,10 @@ INSERT INTO movimentos_estoque (produto_id, tipo, quantidade, preco_custo, motiv
 (5, 'ENTRADA', 15, 280.00, 'Compra fornecedor'),
 (6, 'ENTRADA', 200, 8.00, 'Compra material escolar'),
 (7, 'ENTRADA', 500, 2.00, 'Compra material escolar'),
-(1, 'SAÍDA', 1, 3200.00, 'Venda nota 1001'),
-(2, 'SAÍDA', 1, 250.00, 'Venda nota 1002'),
-(3, 'SAÍDA', 1, 200.00, 'Venda nota 1003'),
-(4, 'SAÍDA', 1, 900.00, 'Venda nota 1004'),
+(1, 'SAÍDA', 1, 3200.00, 'Venda nota 1'),
+(2, 'SAÍDA', 1, 250.00, 'Venda nota 2'),
+(3, 'SAÍDA', 1, 200.00, 'Venda nota 3'),
+(4, 'SAÍDA', 1, 900.00, 'Venda nota 4'),
 (11, 'ENTRADA', 20, 70.00, 'Compra fornecedor'),
 (12, 'ENTRADA', 15, 130.00, 'Compra fornecedor'),
 (13, 'ENTRADA', 8, 100.00, 'Compra fornecedor'),
@@ -136,16 +105,16 @@ INSERT INTO movimentos_estoque (produto_id, tipo, quantidade, preco_custo, motiv
 
 -- Inserir títulos (contas a pagar/receber)
 INSERT INTO titulos (codigo, tipo, historico, data_emissao, data_vencimento, valor, cliente_fornecedor_id, filial_id, status) VALUES
-('T-2026-001', 'RECEBER', 'Venda nota 1001', '2026-10-01', '2026-10-31', 4500.00, 1, 1, 'ABERTO'),
-('T-2026-002', 'RECEBER', 'Venda nota 1002', '2026-10-05', '2026-11-04', 850.00, 2, 2, 'ABERTO'),
-('T-2026-003', 'RECEBER', 'Venda nota 1003', '2026-10-10', '2026-11-09', 5330.00, 3, 3, 'ABERTO'),
-('T-2026-004', 'RECEBER', 'Venda nota 1004', '2026-10-15', '2026-11-14', 1200.00, 4, 4, 'ABERTO'),
-('T-2026-005', 'RECEBER', 'Venda nota 1005', '2026-10-20', '2026-11-19', 5850.00, 5, 5, 'ABERTO'),
-('T-2026-006', 'RECEBER', 'Venda nota 1006', '2026-10-25', '2026-11-24', 220.00, 6, 1, 'ABERTO'),
-('T-2026-007', 'RECEBER', 'Venda nota 1007', '2026-10-28', '2026-11-27', 130.00, 7, 2, 'ABERTO'),
-('T-2026-008', 'RECEBER', 'Venda nota 1008', '2026-10-30', '2026-12-01', 1030.00, 8, 3, 'ABERTO'),
-('T-2026-009', 'RECEBER', 'Venda nota 1009', '2026-11-02', '2026-11-30', 95.00, 9, 4, 'ABERTO'),
-('T-2026-010', 'RECEBER', 'Venda nota 1010', '2026-11-05', '2026-12-05', 4580.00, 10, 1, 'ABERTO');
+('T-2026-001', 'RECEBER', 'Venda nota 1', '2026-10-01', '2026-10-31', 4500.00, 1, 1, 'ABERTO'),
+('T-2026-002', 'RECEBER', 'Venda nota 2', '2026-10-05', '2026-11-04', 850.00, 2, 2, 'ABERTO'),
+('T-2026-003', 'RECEBER', 'Venda nota 3', '2026-10-10', '2026-11-09', 5330.00, 3, 3, 'ABERTO'),
+('T-2026-004', 'RECEBER', 'Venda nota 4', '2026-10-15', '2026-11-14', 1200.00, 4, 4, 'ABERTO'),
+('T-2026-005', 'RECEBER', 'Venda nota 5', '2026-10-20', '2026-11-19', 5850.00, 5, 5, 'ABERTO'),
+('T-2026-006', 'RECEBER', 'Venda nota 6', '2026-10-25', '2026-11-24', 220.00, 6, 1, 'ABERTO'),
+('T-2026-007', 'RECEBER', 'Venda nota 7', '2026-10-28', '2026-11-27', 130.00, 7, 2, 'ABERTO'),
+('T-2026-008', 'RECEBER', 'Venda nota 8', '2026-10-30', '2026-12-01', 1030.00, 8, 3, 'ABERTO'),
+('T-2026-009', 'RECEBER', 'Venda nota 9', '2026-11-02', '2026-11-30', 95.00, 9, 4, 'ABERTO'),
+('T-2026-010', 'RECEBER', 'Venda nota 10', '2026-11-05', '2026-12-05', 4580.00, 10, 1, 'ABERTO');
 
 -- Inserir parcelas
 INSERT INTO parcelas (titulo_id, numero_parcela, valor, data_vencimento, status) VALUES

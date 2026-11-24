@@ -1,7 +1,10 @@
 import { readFileSync } from 'node:fs';
-import { resolve } from 'node:path';
+import { resolve, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { validarSQL } from './validarSql';
 import type { ResultadoExecucao } from './executar';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 export interface RespostaGeracaoSQL { sql: string; explicacao: string; confidente: boolean }
 type Provedor = (prompt: string) => Promise<string>;
@@ -33,7 +36,7 @@ async function chamarProvedor(prompt: string): Promise<string> {
 }
 
 export async function gerarSQL(pergunta: string, erro?: string, provedor: Provedor = chamarProvedor): Promise<RespostaGeracaoSQL> {
-  const dicionario = readFileSync(resolve(process.cwd(), 'src/esquema/dicionario.yaml'), 'utf8');
+  const dicionario = readFileSync(resolve(__dirname, 'esquema', 'dicionario.yaml'), 'utf8');
   const prompt = `Converta a pergunta em SQL PostgreSQL de leitura. Retorne somente JSON com sql, explicacao e confidente (boolean). Se faltar informação, retorne confidente=false, sql vazio e pergunta de esclarecimento em explicacao. Use somente SELECT, LIMIT até 100 e tabelas do dicionário.\nDicionário:\n${dicionario}\n${exemplos.map(([p, s], i) => `Exemplo ${i + 1}: ${p}\n${s}`).join('\n')}\nPergunta: ${pergunta}\n${erro ? `A consulta anterior falhou: ${erro}. Corrija uma vez.` : ''}`;
   const resposta: unknown = JSON.parse(await provedor(prompt));
   if (!resposta || typeof resposta !== 'object') throw new Error('Resposta inválida do provedor.');

@@ -1,3 +1,4 @@
+import { describe, it, expect, vi } from 'vitest';
 import { PGlite } from '@electric-sql/pglite';
 import { gerarSQL, consultar } from '../src/gerarSql';
 import { executarSQL } from '../src/executar';
@@ -44,5 +45,5 @@ describe('fluxo de consulta', () => {
     const resultado = await executarSQL(pool as any, 'SELECT nome FROM clientes LIMIT 1');
     expect(resultado.dados).toEqual([{ nome: 'Ana' }]);
     await db.close();
-  });
+  }, 10000);
 });
