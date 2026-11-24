@@ -283,6 +283,7 @@ Por seguranca, consultas sao limitadas a 10.000 registros por padrao. O limite p
 
 - 2026-11-21: Estrutura inicial com docker-compose, schema SQL, API REST e frontend React
 - 2026-11-22: Corrigido seed file para usar apenas tabelas whitelisted; corrigidos paths de testes para usar process.cwd(); adicionados imports faltantes de vitest; corrigido caminho do dicionario.yaml em gerarSql.ts; timeout PGlite de 5000ms para 10000ms; PR #7 para review de Abel
+- 2026-11-24: Corrigidos paths em testes (setup.ts, reader-role.test.ts, gabaritos.test.ts, banco.test.ts, fluxo.test.ts, gerarSql.ts) para usar __dirname/fileURLToPath em vez de process.cwd(); todos os 95 testes passam (55 server + 40 web)
 
 ## Autor
 
