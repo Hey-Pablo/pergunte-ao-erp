@@ -1,6 +1,8 @@
 # Pergunte ao ERP
 
-> **Status: Fase 1 concluída.** Projeto com banco de dados, API REST e frontend funcional.
+> **Demonstração:** em breve
+> 
+> **Status:** CI configurado — testes do server e web passando
 
 ## O que é
 
@@ -18,9 +20,10 @@ React, TypeScript, Vite. Node.js/Express no servidor. PostgreSQL com esquema de 
 
 ```
 pergunte-ao-erp/
-├─ web/                        # Interface React com Vite
+├─ web/                        # Interface React
 │  ├─ src/
 │  │  ├─ components/          # PerguntaForm, Resultado
+│  │  ├─ pages/               # Paginas principais
 │  │  ├─ lib/                 # Tipos e utilitarios
 │  │  ├─ App.tsx
 │  │  ├─ main.tsx
@@ -29,45 +32,51 @@ pergunte-ao-erp/
 │  ├─ package.json
 │  └─ vite.config.ts
 ├─ server/src/
-│  ├─ routes/                 # Endpoints da API
-│  │  ├─ gerarSql.ts          # Gera SQL da pergunta
+│  ├─ routes/
+│  │  ├─ gerarSql.ts          # Genera SQL da pergunta
 │  │  ├─ validarSql.ts        # Valida SQL
 │  │  └─ executar.ts          # Executa com usuario de leitura
-│  ├─ gerarSql.ts, validarSql.ts, executar.ts, explicar.ts
+│  ├─ gerarSql.ts              # Configuracao do cliente
+│  ├─ validarSql.ts            # Validador principal
+│  ├─ executar.ts              # Executor com timeout
+│  ├─ explicar.ts            # Explica resultados
 │  ├─ esquema/dicionario.yaml  # Dicionario de dados
 │  ├─ prompts/gerar_sql.md     # Prompt para IA
-│  ├─ app.ts, server.ts, index.ts
-│  └─ tests/                  # Testes unitarios
+│  ├─ app.ts                   # Middleware Express
+│  ├─ server.ts
+│  └─ index.ts               # Entrada principal
 ├─ db/
 │  └─ init-scripts/
 │     ├─ 01_schema.sql        # Schema do banco
 │     ├─ 02_seed.sql          # Dados de exemplo
 │     └─ 03_reader_user.sql   # Usuario de leitura
-├─ tests/                     # Testes raiz
+├─ tests/
+│  └─ validarSql.test.ts     # Testes do validador
 ├─ server/Dockerfile
 ├─ docker-compose.yml
 ├─ .env.example
 └─ README.md
 ```
 
-## Status da Implementacao
+## Segurança
 
-| Etapa | Status | Detalhes |
-|-------|--------|----------|
-| 1. Banco de demonstracao | ✅ Concluido | Schema com 9 tabelas, 4 visoes, usuario de leitura |
-| 2. Dicionario de dados | ✅ Concluido | Terms de negocio mapeados para tabelas/colunas |
-| 3. Geracao de SQL | ✅ Concluido | Gerador por rotas, pronto para Claude |
-| 4. Validador SQL | ✅ Concluido | Whitelist de tabelas, colunas e limites |
-| 5. Execucao SQL | ✅ Concluido | Timeout 30s, limite 10k registros |
-| 6. Frontend | ✅ Concluido | React com Vite, componentes principais |
-| 7. Testes | ✅ Concluido | 12 testes passando |
-| 8. Seguranca | ✅ Concluido | Usuario de leitura, validacao rigorosa |
+### Ameaças e Defesas
 
-## Prazo Estimado
+| Ameaca | Defesa |
+|--------|--------|
+| Execucao de consultas maliciosas | Validador estrito que rejeita INSERT/UPDATE/DELETE |
+| Exposicao de dados sensiveis | Usuario de leitura somente, sem CREATE/DROP |
+| Consultas lentas | Timeout de 30 segundos por consulta |
+| Excesso de resultados | Limite maximo de 10.000 registros |
+| SQL injection | Validacao de tabelas e colunas permitidas |
 
-3 a 4 semanas desde o inicio da implementacao.
+### Permissoes do Usuario de Leitura
 
-## Como executar localmente
+- `SELECT` em todas as tabelas e vistas
+- `statement_timeout = 30s`
+- Sem permissoes DDL ou utilitarios
+
+## Instalacao Local
 
 ### Requisitos
 
@@ -100,10 +109,8 @@ docker run -d -p 5432:5432 --name pg-pergunte \
   -e POSTGRES_DB=pergunte_erp \
   postgres:16-alpine
 
-# Rodar migracoes e seed
-psql -U pergunte_user -d pergunte_erp -f db/init-scripts/01_schema.sql
-psql -U pergunte_user -d pergunte_erp -f db/init-scripts/02_seed.sql
-psql -U postgres -d pergunte_erp -f db/init-scripts/03_reader_user.sql
+# Inicializar schema
+# ... (rodar scripts SQL)
 
 # Servidor
 cd server
@@ -153,7 +160,7 @@ npm run dev
 ## Testes
 
 ```bash
-# Testes do validador SQL
+# Testes do servidor
 cd server
 npm test
 ```
@@ -177,7 +184,6 @@ Por seguranca, consultas sao limitadas a 10.000 registros por padrao. O limite p
 
 ## Historico de Alteracoes
 
-- 2026-11-21: Fase 1 concluida - Banco, API e frontend implementados
 - 2026-11-21: Estrutura inicial com docker-compose, schema SQL, API REST e frontend React
 
 ## Autor
