@@ -2,6 +2,8 @@
 
 > **Demonstração:** em breve
 
+> **Status: concluído.** Servidor, validador de SQL, banco fictício, tela web e avaliação por gabarito prontos, com testes automatizados e CI. Falta rodar a avaliação com um provedor de IA real (chave própria; ver "Configurar sua chave").
+
 ## O que é
 
 Interface em que o usuário pergunta em português e recebe a resposta do banco. O modelo gera a consulta, um validador garante que ela só lê dados permitidos, o banco executa com usuário de leitura e a tela mostra tabela, gráfico, o SQL usado e uma explicação.
