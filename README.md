@@ -1,6 +1,8 @@
 # Pergunte ao ERP
 
-> **Demonstração:** https://hey-pablo.github.io/pergunte-ao-erp/
+> **Demonstração:** em breve
+> 
+> **Status:** CI configurado — testes do server e web passando
 
 ## O que é
 
@@ -158,7 +160,7 @@ npm run dev
 ## Testes
 
 ```bash
-# Testes do validador SQL
+# Testes do servidor
 cd server
 npm test
 ```
