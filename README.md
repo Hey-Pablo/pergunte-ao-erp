@@ -52,6 +52,9 @@ pergunte-ao-erp/
 │     └─ 03_reader_user.sql   # Usuario de leitura
 ├─ tests/
 │  └─ validarSql.test.ts     # Testes do validador
+├─ web/src/lib/
+│  └─ utils.test.ts          # 24 testes de utilitários
+└─ web/vitest.config.ts      # Configuração de testes Web
 ├─ server/Dockerfile
 ├─ docker-compose.yml
 ├─ .env.example
@@ -163,6 +166,13 @@ npm run dev
 # Testes do servidor
 cd server
 npm test
+# 12 testes passando (validarSql)
+
+# Testes do frontend
+cd web
+npm test
+# 24 testes passando (utils)
+# Total: 36 testes passando
 ```
 
 ## API
